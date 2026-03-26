@@ -208,23 +208,6 @@ export default function Globe({
     }
   }, [spinTarget, isSpinning, onSpinComplete]);
 
-  const filteredDestinations =
-    selectedRegion && selectedRegion !== "All Regions"
-      ? destinations.filter((d) => d.region === selectedRegion)
-      : destinations;
-
-  const pointColor = useCallback(
-    (d: object) => {
-      const dest = d as Destination;
-      if (spinTarget && dest.id === spinTarget.id) return "#22c55e";
-      if (selectedRegion && selectedRegion !== "All Regions") {
-        return dest.region === selectedRegion ? "#3b82f6" : "#374151";
-      }
-      return "#3b82f6";
-    },
-    [spinTarget, selectedRegion]
-  );
-
   return (
     <div ref={containerRef} className="w-full h-full min-h-[400px]">
       {dimensions.width > 0 && (
@@ -237,22 +220,6 @@ export default function Globe({
           showAtmosphere={true}
           atmosphereColor="#6eb1ff"
           atmosphereAltitude={0.18}
-          pointsData={filteredDestinations}
-          pointLat={(d: object) => (d as Destination).latitude}
-          pointLng={(d: object) => (d as Destination).longitude}
-          pointColor={pointColor}
-          pointAltitude={(d: object) =>
-            spinTarget && (d as Destination).id === spinTarget.id
-              ? 0.06
-              : 0.02
-          }
-          pointRadius={(d: object) =>
-            spinTarget && (d as Destination).id === spinTarget.id ? 0.6 : 0.3
-          }
-          pointLabel={(d: object) => {
-            const dest = d as Destination;
-            return `<div class="text-sm font-medium bg-zinc-900/90 text-white px-2 py-1 rounded">${dest.name}, ${dest.country}</div>`;
-          }}
           animateIn={true}
           onGlobeReady={handleGlobeReady}
         />
