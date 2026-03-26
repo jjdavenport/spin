@@ -19,3 +19,5 @@ export const CREDIT_PACKS = [
   { id: "pack_20", credits: 20, price: 999, label: "20 Credits", priceLabel: "$9.99" },
   { id: "pack_50", credits: 50, price: 1999, label: "50 Credits", priceLabel: "$19.99" },
 ] as const;
+
+export const FROM_EMAIL = "Spin <hello@spin.travel>";

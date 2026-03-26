@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { addMockWaitlistEntry, getMockWaitlistCount } from "@/lib/mock-data";
+import { sendWaitlistEmail } from "@/lib/send-email";
 
 export async function POST(request: Request) {
   try {
@@ -14,6 +15,8 @@ export async function POST(request: Request) {
 
     addMockWaitlistEntry(email);
     const count = getMockWaitlistCount();
+
+    sendWaitlistEmail(email, count).catch(() => {});
 
     return NextResponse.json({ success: true, position: count });
   } catch {
