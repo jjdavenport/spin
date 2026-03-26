@@ -48,7 +48,7 @@ void main() {
   float distanceToCamera = length(cameraPosition - wPos);
 
   // Scroll UVs horizontally to simulate globe rotation
-  vec2 spinUv = vec2(fract(vUv.x + uTime * 0.005), vUv.y);
+  vec2 spinUv = vec2(fract(vUv.x - uTime * 0.005), vUv.y);
 
   vec3 result = vec3(0.0);
 
