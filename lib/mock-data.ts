@@ -1,0 +1,120 @@
+import { Destination, SpinHistoryEntry } from "./types";
+
+export const DESTINATIONS: Destination[] = [
+  // Europe
+  { id: "1", name: "Paris", country: "France", region: "Europe", latitude: 48.8566, longitude: 2.3522, description: "The City of Light, home to the Eiffel Tower, Louvre Museum, and world-class cuisine.", image_url: null },
+  { id: "2", name: "Rome", country: "Italy", region: "Europe", latitude: 41.9028, longitude: 12.4964, description: "The Eternal City with ancient ruins, Renaissance art, and incredible pasta.", image_url: null },
+  { id: "3", name: "Barcelona", country: "Spain", region: "Europe", latitude: 41.3874, longitude: 2.1686, description: "Gaudí's masterpieces, vibrant nightlife, and Mediterranean beaches.", image_url: null },
+  { id: "4", name: "Amsterdam", country: "Netherlands", region: "Europe", latitude: 52.3676, longitude: 4.9041, description: "Canal-lined streets, world-class museums, and cycling culture.", image_url: null },
+  { id: "5", name: "Santorini", country: "Greece", region: "Europe", latitude: 36.3932, longitude: 25.4615, description: "Stunning sunsets, white-washed buildings, and volcanic beaches.", image_url: null },
+  { id: "6", name: "Prague", country: "Czech Republic", region: "Europe", latitude: 50.0755, longitude: 14.4378, description: "Gothic architecture, historic bridges, and legendary beer culture.", image_url: null },
+  { id: "7", name: "Reykjavik", country: "Iceland", region: "Europe", latitude: 64.1466, longitude: -21.9426, description: "Northern lights, geothermal pools, and dramatic volcanic landscapes.", image_url: null },
+  { id: "8", name: "Dubrovnik", country: "Croatia", region: "Europe", latitude: 42.6507, longitude: 18.0944, description: "Pearl of the Adriatic with medieval walls and crystal-clear waters.", image_url: null },
+  { id: "9", name: "Edinburgh", country: "Scotland", region: "Europe", latitude: 55.9533, longitude: -3.1883, description: "Historic castle, cobblestone streets, and world-famous festivals.", image_url: null },
+  { id: "10", name: "Vienna", country: "Austria", region: "Europe", latitude: 48.2082, longitude: 16.3738, description: "Imperial palaces, classical music, and legendary coffee houses.", image_url: null },
+  { id: "11", name: "Lisbon", country: "Portugal", region: "Europe", latitude: 38.7223, longitude: -9.1393, description: "Colorful tiles, tram rides, and pastéis de nata.", image_url: null },
+  { id: "12", name: "Copenhagen", country: "Denmark", region: "Europe", latitude: 55.6761, longitude: 12.5683, description: "Hygge culture, innovative cuisine, and colorful Nyhavn harbor.", image_url: null },
+
+  // Asia
+  { id: "13", name: "Tokyo", country: "Japan", region: "Asia", latitude: 35.6762, longitude: 139.6503, description: "Neon-lit streets, ancient temples, and the world's best street food.", image_url: null },
+  { id: "14", name: "Bali", country: "Indonesia", region: "Asia", latitude: -8.3405, longitude: 115.092, description: "Lush rice terraces, sacred temples, and world-class surfing.", image_url: null },
+  { id: "15", name: "Bangkok", country: "Thailand", region: "Asia", latitude: 13.7563, longitude: 100.5018, description: "Ornate temples, bustling street markets, and legendary street food.", image_url: null },
+  { id: "16", name: "Seoul", country: "South Korea", region: "Asia", latitude: 37.5665, longitude: 126.978, description: "K-pop culture, historic palaces, and incredible BBQ.", image_url: null },
+  { id: "17", name: "Hanoi", country: "Vietnam", region: "Asia", latitude: 21.0285, longitude: 105.8542, description: "French colonial charm, pho, and bustling Old Quarter.", image_url: null },
+  { id: "18", name: "Kyoto", country: "Japan", region: "Asia", latitude: 35.0116, longitude: 135.7681, description: "Thousand-year-old temples, geisha districts, and bamboo forests.", image_url: null },
+  { id: "19", name: "Singapore", country: "Singapore", region: "Asia", latitude: 1.3521, longitude: 103.8198, description: "Futuristic skyline, hawker centers, and Gardens by the Bay.", image_url: null },
+  { id: "20", name: "Kathmandu", country: "Nepal", region: "Asia", latitude: 27.7172, longitude: 85.324, description: "Gateway to Everest, ancient temples, and Himalayan views.", image_url: null },
+  { id: "21", name: "Luang Prabang", country: "Laos", region: "Asia", latitude: 19.8843, longitude: 102.1347, description: "UNESCO town with Buddhist monks, night markets, and waterfalls.", image_url: null },
+  { id: "22", name: "Jaipur", country: "India", region: "Asia", latitude: 26.9124, longitude: 75.7873, description: "The Pink City with majestic forts, palaces, and vibrant bazaars.", image_url: null },
+
+  // Africa
+  { id: "23", name: "Cape Town", country: "South Africa", region: "Africa", latitude: -33.9249, longitude: 18.4241, description: "Table Mountain, stunning coastlines, and world-class wine regions.", image_url: null },
+  { id: "24", name: "Marrakech", country: "Morocco", region: "Africa", latitude: 31.6295, longitude: -7.9811, description: "Vibrant souks, ornate riads, and the magic of Jemaa el-Fnaa.", image_url: null },
+  { id: "25", name: "Serengeti", country: "Tanzania", region: "Africa", latitude: -2.3333, longitude: 34.8333, description: "The Great Migration, big five safaris, and endless savanna.", image_url: null },
+  { id: "26", name: "Zanzibar", country: "Tanzania", region: "Africa", latitude: -6.1659, longitude: 39.1989, description: "Spice island with turquoise waters and Stone Town's winding alleys.", image_url: null },
+  { id: "27", name: "Victoria Falls", country: "Zimbabwe", region: "Africa", latitude: -17.9244, longitude: 25.8567, description: "The Smoke That Thunders — one of the world's largest waterfalls.", image_url: null },
+  { id: "28", name: "Luxor", country: "Egypt", region: "Africa", latitude: 25.6872, longitude: 32.6396, description: "Valley of the Kings, Karnak Temple, and ancient Egyptian grandeur.", image_url: null },
+  { id: "29", name: "Madagascar", country: "Madagascar", region: "Africa", latitude: -18.7669, longitude: 46.8691, description: "Unique wildlife, baobab trees, and pristine rainforests.", image_url: null },
+  { id: "30", name: "Nairobi", country: "Kenya", region: "Africa", latitude: -1.2921, longitude: 36.8219, description: "Safari gateway, national park within a city, and vibrant culture.", image_url: null },
+
+  // North America
+  { id: "31", name: "New York City", country: "United States", region: "North America", latitude: 40.7128, longitude: -74.006, description: "The city that never sleeps — Broadway, Central Park, and pizza.", image_url: null },
+  { id: "32", name: "Banff", country: "Canada", region: "North America", latitude: 51.1784, longitude: -115.5708, description: "Turquoise lakes, Rocky Mountain peaks, and wildlife encounters.", image_url: null },
+  { id: "33", name: "Mexico City", country: "Mexico", region: "North America", latitude: 19.4326, longitude: -99.1332, description: "Ancient Aztec ruins, world-class museums, and incredible tacos.", image_url: null },
+  { id: "34", name: "Havana", country: "Cuba", region: "North America", latitude: 23.1136, longitude: -82.3666, description: "Vintage cars, salsa music, and colorful colonial architecture.", image_url: null },
+  { id: "35", name: "Grand Canyon", country: "United States", region: "North America", latitude: 36.1069, longitude: -112.1129, description: "A mile-deep natural wonder carved over millions of years.", image_url: null },
+  { id: "36", name: "San Francisco", country: "United States", region: "North America", latitude: 37.7749, longitude: -122.4194, description: "Golden Gate Bridge, cable cars, and foggy coastal charm.", image_url: null },
+  { id: "37", name: "Tulum", country: "Mexico", region: "North America", latitude: 20.2114, longitude: -87.4654, description: "Mayan ruins overlooking Caribbean beaches and cenotes.", image_url: null },
+  { id: "38", name: "Vancouver", country: "Canada", region: "North America", latitude: 49.2827, longitude: -123.1207, description: "Mountains meet ocean with world-class dining and nature.", image_url: null },
+
+  // South America
+  { id: "39", name: "Rio de Janeiro", country: "Brazil", region: "South America", latitude: -22.9068, longitude: -43.1729, description: "Christ the Redeemer, Copacabana Beach, and Carnival.", image_url: null },
+  { id: "40", name: "Machu Picchu", country: "Peru", region: "South America", latitude: -13.1631, longitude: -72.545, description: "Ancient Incan citadel perched high in the Andes clouds.", image_url: null },
+  { id: "41", name: "Buenos Aires", country: "Argentina", region: "South America", latitude: -34.6037, longitude: -58.3816, description: "Tango, steak, and European-flavored South American culture.", image_url: null },
+  { id: "42", name: "Galápagos Islands", country: "Ecuador", region: "South America", latitude: -0.9538, longitude: -90.9656, description: "Darwin's living laboratory with unique wildlife found nowhere else.", image_url: null },
+  { id: "43", name: "Patagonia", country: "Argentina", region: "South America", latitude: -50.3402, longitude: -72.2646, description: "Glaciers, jagged peaks, and some of Earth's last wild frontiers.", image_url: null },
+  { id: "44", name: "Cartagena", country: "Colombia", region: "South America", latitude: 10.391, longitude: -75.5144, description: "Colorful colonial walled city on the Caribbean coast.", image_url: null },
+  { id: "45", name: "Salar de Uyuni", country: "Bolivia", region: "South America", latitude: -20.1338, longitude: -67.4891, description: "World's largest salt flat — a surreal mirror in the sky.", image_url: null },
+
+  // Oceania
+  { id: "46", name: "Sydney", country: "Australia", region: "Oceania", latitude: -33.8688, longitude: 151.2093, description: "Iconic Opera House, harbour bridge, and golden beaches.", image_url: null },
+  { id: "47", name: "Queenstown", country: "New Zealand", region: "Oceania", latitude: -45.0312, longitude: 168.6626, description: "Adventure capital with bungee jumping, skiing, and fjords.", image_url: null },
+  { id: "48", name: "Great Barrier Reef", country: "Australia", region: "Oceania", latitude: -18.2871, longitude: 147.6992, description: "World's largest coral reef system with incredible marine life.", image_url: null },
+  { id: "49", name: "Bora Bora", country: "French Polynesia", region: "Oceania", latitude: -16.5004, longitude: -151.7415, description: "Overwater bungalows, turquoise lagoon, and volcanic peaks.", image_url: null },
+  { id: "50", name: "Fiji", country: "Fiji", region: "Oceania", latitude: -17.7134, longitude: 178.065, description: "Paradise islands with warm hospitality and coral reefs.", image_url: null },
+  { id: "51", name: "Milford Sound", country: "New Zealand", region: "Oceania", latitude: -44.6414, longitude: 167.8974, description: "Dramatic fjord with towering peaks, waterfalls, and dolphins.", image_url: null },
+
+  // Middle East
+  { id: "52", name: "Dubai", country: "UAE", region: "Middle East", latitude: 25.2048, longitude: 55.2708, description: "Futuristic skyline, luxury shopping, and desert adventures.", image_url: null },
+  { id: "53", name: "Petra", country: "Jordan", region: "Middle East", latitude: 30.3285, longitude: 35.4444, description: "Rose-red ancient city carved into desert cliffs.", image_url: null },
+  { id: "54", name: "Istanbul", country: "Turkey", region: "Middle East", latitude: 41.0082, longitude: 28.9784, description: "Where East meets West — mosques, bazaars, and Bosphorus views.", image_url: null },
+  { id: "55", name: "Jerusalem", country: "Israel", region: "Middle East", latitude: 31.7683, longitude: 35.2137, description: "Holy city for three faiths with ancient walls and sacred sites.", image_url: null },
+  { id: "56", name: "Oman", country: "Oman", region: "Middle East", latitude: 23.5859, longitude: 58.4059, description: "Dramatic fjords, desert forts, and Arabian hospitality.", image_url: null },
+  { id: "57", name: "Cappadocia", country: "Turkey", region: "Middle East", latitude: 38.6431, longitude: 34.8289, description: "Hot air balloons over fairy chimneys and cave hotels.", image_url: null },
+];
+
+// In-memory mock state
+let mockCredits = 3;
+let mockHistory: (SpinHistoryEntry & { destination: Destination })[] = [];
+
+export function getMockBalance(): number {
+  return mockCredits;
+}
+
+export function deductMockCredit(): boolean {
+  if (mockCredits <= 0) return false;
+  mockCredits -= 1;
+  return true;
+}
+
+export function addMockCredits(amount: number): void {
+  mockCredits += amount;
+}
+
+export function getRandomDestination(region?: string): Destination {
+  const filtered =
+    region && region !== "All Regions"
+      ? DESTINATIONS.filter((d) => d.region === region)
+      : DESTINATIONS;
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+export function addMockSpinHistory(
+  destination: Destination,
+  regionFilter: string | null
+): SpinHistoryEntry & { destination: Destination } {
+  const entry = {
+    id: crypto.randomUUID(),
+    user_id: "mock-user",
+    destination_id: destination.id,
+    region_filter: regionFilter,
+    created_at: new Date().toISOString(),
+    destination,
+  };
+  mockHistory.unshift(entry);
+  return entry;
+}
+
+export function getMockHistory() {
+  return mockHistory;
+}
