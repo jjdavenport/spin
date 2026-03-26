@@ -2,6 +2,12 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  // Public routes that never require auth (shareable URLs, etc.)
+  const publicPaths = ["/", "/login", "/callback", "/destination"];
+  if (publicPaths.some((p) => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + "/"))) {
+    return NextResponse.next({ request });
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
