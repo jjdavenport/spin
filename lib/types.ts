@@ -61,3 +61,9 @@ export interface EmailSubscription {
   destination_id: string;
   created_at: string;
 }
+
+export interface WaitlistEntry {
+  id: string;
+  email: string;
+  created_at: string;
+}

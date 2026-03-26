@@ -137,6 +137,27 @@ export function isMockDestinationSaved(id: string): boolean {
   return mockSavedDestinations.has(id);
 }
 
+// Waitlist
+const WAITLIST_BASE_COUNT = 2847;
+let mockWaitlistEntries: { id: string; email: string; created_at: string }[] = [];
+
+export function addMockWaitlistEntry(email: string): { id: string; email: string; created_at: string } {
+  const existing = mockWaitlistEntries.find((e) => e.email === email);
+  if (existing) return existing;
+
+  const entry = {
+    id: crypto.randomUUID(),
+    email,
+    created_at: new Date().toISOString(),
+  };
+  mockWaitlistEntries.push(entry);
+  return entry;
+}
+
+export function getMockWaitlistCount(): number {
+  return WAITLIST_BASE_COUNT + mockWaitlistEntries.length;
+}
+
 export function addMockEmailSubscription(
   email: string,
   destinationId: string
