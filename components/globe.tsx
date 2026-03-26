@@ -14,13 +14,14 @@ interface GlobeProps {
   onSpinComplete: () => void;
 }
 
-// NASA texture URLs (free, public domain)
-const BLUE_MARBLE_URL =
-  "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg";
-const BUMP_MAP_URL = "//unpkg.com/three-globe/example/img/earth-topology.png";
-const NIGHT_SKY_URL = "//unpkg.com/three-globe/example/img/night-sky.png";
-const CLOUDS_URL =
-  "https://raw.githubusercontent.com/turban/webgl-earth/master/images/fair_clouds_4k.png";
+// Self-hosted high-res NASA textures (public domain)
+const BLUE_MARBLE_URL = "/textures/earth-blue-marble-8k.jpg";
+const NIGHT_LIGHTS_URL = "/textures/earth-night-8k.jpg";
+const BUMP_MAP_URL = "/textures/earth-topology.png";
+const WATER_MAP_URL = "/textures/earth-water.png";
+const CLOUDS_URL = "/textures/clouds.png";
+const NIGHT_SKY_URL =
+  "//unpkg.com/three-globe/example/img/night-sky.png";
 
 export default function Globe({
   destinations,
@@ -51,7 +52,7 @@ export default function Globe({
     return () => observer.disconnect();
   }, []);
 
-  // Add cloud layer once globe is ready
+  // Set up lighting, clouds, night lights, and ocean specular on globe ready
   const handleGlobeReady = useCallback(() => {
     const globe = globeRef.current;
     if (!globe) return;
@@ -59,25 +60,102 @@ export default function Globe({
     import("three").then((THREE) => {
       const scene = globe.scene();
       const globeRadius = globe.getGlobeRadius();
+      const loader = new THREE.TextureLoader();
 
-      // Cloud sphere — slightly larger than the globe
-      const geometry = new THREE.SphereGeometry(
+      // --- Improved lighting for day/night effect ---
+      // Remove default lights
+      const lights = scene.children.filter((c: any) => c.isLight);
+      lights.forEach((l: any) => scene.remove(l));
+
+      // Sun: strong directional light from one side
+      const sun = new THREE.DirectionalLight(0xffffff, 3);
+      sun.position.set(1, 0.5, 1.5).normalize();
+      scene.add(sun);
+
+      // Dim ambient so the dark side isn't pitch black
+      const ambient = new THREE.AmbientLight(0x222244, 1.2);
+      scene.add(ambient);
+
+      // --- Night city lights (emissive) + Ocean specular ---
+      // Find the globe mesh and enhance its material
+      const loadTextures = Promise.all([
+        new Promise<any>((res) => loader.load(NIGHT_LIGHTS_URL, res)),
+        new Promise<any>((res) => loader.load(WATER_MAP_URL, res)),
+      ]);
+
+      loadTextures.then(([nightTex, waterTex]) => {
+        scene.traverse((child: any) => {
+          if (child.isMesh && child.material?.map) {
+            const mat = child.material;
+
+            // Night city lights: emissive layer glows on dark side
+            mat.emissiveMap = nightTex;
+            mat.emissive = new THREE.Color(0xffcc88);
+            mat.emissiveIntensity = 1.5;
+
+            // Ocean reflections: specular highlights on water
+            mat.specularMap = waterTex;
+            mat.specular = new THREE.Color(0x666688);
+            mat.shininess = 20;
+
+            mat.needsUpdate = true;
+          }
+        });
+      });
+
+      // --- Cloud layer ---
+      const cloudGeo = new THREE.SphereGeometry(
         globeRadius * 1.005,
         64,
         64
       );
-      const loader = new THREE.TextureLoader();
-      loader.load(CLOUDS_URL, (texture: any) => {
-        const material = new THREE.MeshPhongMaterial({
-          map: texture,
+      loader.load(CLOUDS_URL, (cloudTex: any) => {
+        const cloudMat = new THREE.MeshPhongMaterial({
+          map: cloudTex,
           transparent: true,
-          opacity: 0.3,
+          opacity: 0.25,
           depthWrite: false,
         });
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        cloudsRef.current = mesh;
+        const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+        scene.add(cloudMesh);
+        cloudsRef.current = cloudMesh;
       });
+
+      // --- Atmosphere glow (outer halo) ---
+      const glowGeo = new THREE.SphereGeometry(
+        globeRadius * 1.15,
+        64,
+        64
+      );
+      const glowMat = new THREE.ShaderMaterial({
+        uniforms: {
+          glowColor: { value: new THREE.Color(0x4d9fff) },
+          viewVector: { value: new THREE.Vector3(0, 0, 1) },
+        },
+        vertexShader: `
+          uniform vec3 viewVector;
+          varying float intensity;
+          void main() {
+            vec3 vNormal = normalize(normalMatrix * normal);
+            vec3 vNormel = normalize(normalMatrix * viewVector);
+            intensity = pow(0.65 - dot(vNormal, vNormel), 3.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 glowColor;
+          varying float intensity;
+          void main() {
+            gl_FragColor = vec4(glowColor, intensity * 0.6);
+          }
+        `,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false,
+      });
+      const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+      scene.add(glowMesh);
     });
   }, []);
 
@@ -96,7 +174,6 @@ export default function Globe({
       }
     }
 
-    // Slowly rotate cloud layer
     const animateClouds = () => {
       if (cloudsRef.current) {
         cloudsRef.current.rotation.y += 0.00008;
@@ -167,7 +244,7 @@ export default function Globe({
           backgroundImageUrl={NIGHT_SKY_URL}
           showAtmosphere={true}
           atmosphereColor="#6eb1ff"
-          atmosphereAltitude={0.2}
+          atmosphereAltitude={0.18}
           pointsData={filteredDestinations}
           pointLat={(d: object) => (d as Destination).latitude}
           pointLng={(d: object) => (d as Destination).longitude}
