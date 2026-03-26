@@ -19,7 +19,7 @@ export function Footer() {
             <a href="/privacy" className="hover:text-foreground transition-colors">
               Privacy
             </a>
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="/terms" className="hover:text-foreground transition-colors">
               Terms
             </a>
             <a
