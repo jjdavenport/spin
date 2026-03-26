@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   // Public routes that never require auth (shareable URLs, etc.)
-  const publicPaths = ["/", "/login", "/callback", "/destination"];
+  const publicPaths = ["/", "/login", "/callback", "/destination", "/admin"];
   if (publicPaths.some((p) => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + "/"))) {
     return NextResponse.next({ request });
   }

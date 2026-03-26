@@ -13,6 +13,7 @@ const links = [
   { href: "/spin", label: "Spin" },
   { href: "/history", label: "History" },
   { href: "/credits", label: "Credits" },
+  { href: "/admin", label: "Admin" },
 ];
 
 export default function Nav({ credits }: NavProps) {
