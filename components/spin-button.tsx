@@ -20,7 +20,7 @@ export default function SpinButton({
       onClick={onClick}
       disabled={disabled || isSpinning || credits <= 0}
       size="lg"
-      className="h-14 px-8 text-lg font-bold rounded-full transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50"
+      className="h-12 px-6 text-base sm:h-14 sm:px-8 sm:text-lg font-bold rounded-full transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50"
     >
       {isSpinning ? (
         <span className="flex items-center gap-2">

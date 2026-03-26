@@ -63,7 +63,7 @@ export default function SpinPage() {
   }, []);
 
   return (
-    <div className="relative flex-1 flex flex-col h-[calc(100vh-3.5rem)]">
+    <div className="relative flex-1 flex flex-col h-[calc(100dvh-3.5rem)]">
       {/* Globe fills the background */}
       <div className="absolute inset-0">
         <Globe
@@ -76,7 +76,7 @@ export default function SpinPage() {
       </div>
 
       {/* Floating controls overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-between h-full py-6 pointer-events-none">
+      <div className="relative z-10 flex flex-col items-center justify-between h-full py-4 sm:py-6 pointer-events-none">
         {/* Top: region filter */}
         <div className="pointer-events-auto flex items-center gap-3">
           <RegionFilter

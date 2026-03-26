@@ -30,12 +30,12 @@ export default function LandingPage() {
           </p>
           <div className="flex items-center justify-center gap-4 pt-4">
             <Link href="/login">
-              <Button size="lg" className="h-12 px-8 text-base rounded-full">
+              <Button size="lg" className="h-11 px-6 text-sm sm:h-12 sm:px-8 sm:text-base rounded-full">
                 Get Started — 3 Free Spins
               </Button>
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-8 pt-8 text-sm text-muted-foreground">
+          <div className="flex items-center justify-center flex-wrap gap-4 sm:gap-8 pt-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <svg
                 className="h-4 w-4"

@@ -209,7 +209,7 @@ export default function Globe({
   }, [spinTarget, isSpinning, onSpinComplete]);
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-[400px]">
+    <div ref={containerRef} className="w-full h-full min-h-[300px]">
       {dimensions.width > 0 && (
         <ReactGlobe
           ref={globeRef}

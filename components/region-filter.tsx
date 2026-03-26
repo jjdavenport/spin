@@ -22,7 +22,7 @@ export default function RegionFilter({
 }: RegionFilterProps) {
   return (
     <Select value={value ?? "All Regions"} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[140px] sm:w-[180px]">
         <SelectValue placeholder="Filter by region" />
       </SelectTrigger>
       <SelectContent>

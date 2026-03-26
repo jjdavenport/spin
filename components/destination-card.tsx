@@ -23,7 +23,7 @@ export default function DestinationCard({
 
   return (
     <Card
-      className="w-full max-w-sm animate-in fade-in slide-in-from-bottom-4 duration-500"
+      className="w-full max-w-sm mx-4 sm:mx-0 animate-in fade-in slide-in-from-bottom-4 duration-500"
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">

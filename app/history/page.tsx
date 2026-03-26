@@ -22,8 +22,8 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold tracking-tight mb-6">Spin History</h1>
+    <div className="max-w-3xl mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Spin History</h1>
 
       {loading ? (
         <div className="space-y-4">
@@ -49,7 +49,7 @@ export default function HistoryPage() {
         <div className="space-y-3">
           {history.map((entry, i) => (
             <Card key={entry.id}>
-              <CardContent className="flex items-center justify-between py-4">
+              <CardContent className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between py-4">
                 <div className="space-y-1">
                   <p className="font-semibold text-lg">
                     {entry.destination.name}
@@ -58,7 +58,7 @@ export default function HistoryPage() {
                     {entry.destination.country}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 text-right">
+                <div className="flex items-center gap-3">
                   <Badge variant="secondary">{entry.destination.region}</Badge>
                   <span className="text-xs text-muted-foreground font-mono">
                     {new Date(entry.created_at).toLocaleDateString()}
