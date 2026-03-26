@@ -16,7 +16,7 @@ export function Footer() {
 
           {/* Links */}
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="/privacy" className="hover:text-foreground transition-colors">
               Privacy
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
