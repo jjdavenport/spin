@@ -1,75 +1,88 @@
 "use client";
 
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import {
+  BackSide,
+  SRGBColorSpace,
+  TextureLoader,
+  Vector3,
+} from "three";
+import { earthFragmentShader, earthVertexShader } from "./earth/earth-shaders";
+import {
+  atmosphereFragmentShader,
+  atmosphereVertexShader,
+} from "./earth/atmosphere-shaders";
+
+const LIGHT_DIR = new Vector3(1, 0, 0).applyAxisAngle(
+  new Vector3(0, 0, 1),
+  Math.PI * (13 / 180)
+);
+
+function Globe() {
+  const [dayTex, nightTex, cloudTex] = useLoader(TextureLoader, [
+    "/textures/earth-blue-marble-8k.jpg",
+    "/textures/earth-night-8k.jpg",
+    "/textures/earth-clouds.jpg",
+  ]);
+
+  dayTex.colorSpace = nightTex.colorSpace = cloudTex.colorSpace = SRGBColorSpace;
+
+  const earthUniforms = useRef({
+    dayMap: { value: dayTex },
+    nightMap: { value: nightTex },
+    cloudMap: { value: cloudTex },
+    uTime: { value: 0 },
+    lightDirection: { value: LIGHT_DIR.clone() },
+  });
+
+  const atmosUniforms = useRef({
+    lightDirection: { value: LIGHT_DIR.clone() },
+  });
+
+  useFrame((_, delta) => {
+    earthUniforms.current.uTime.value += delta;
+  });
+
+  return (
+    <group>
+      {/* Earth */}
+      <mesh>
+        <sphereGeometry args={[1, 200, 200]} />
+        <shaderMaterial
+          vertexShader={earthVertexShader}
+          fragmentShader={earthFragmentShader}
+          uniforms={earthUniforms.current}
+        />
+      </mesh>
+      {/* Atmosphere */}
+      <mesh scale={1.02}>
+        <sphereGeometry args={[1, 200, 200]} />
+        <shaderMaterial
+          vertexShader={atmosphereVertexShader}
+          fragmentShader={atmosphereFragmentShader}
+          uniforms={atmosUniforms.current}
+          side={BackSide}
+          transparent
+        />
+      </mesh>
+    </group>
+  );
+}
+
 export function HeroGlobe() {
   return (
-    <div className="relative w-[280px] h-[280px] sm:w-[480px] sm:h-[480px] lg:w-[560px] lg:h-[560px]">
-      {/* Glow backdrop */}
-      <div className="absolute inset-[-20%] rounded-full bg-blue-500/10 blur-3xl" />
-
-      {/* Globe sphere */}
-      <div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 35% 35%, #1e3a5f 0%, #0c1929 50%, #060d16 100%)",
-          boxShadow:
-            "inset -20px -20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(59,130,246,0.15), 0 0 120px rgba(59,130,246,0.08)",
-        }}
-      />
-
-      {/* Rotating grid lines */}
-      <div className="absolute inset-0 animate-globe-spin">
-        <svg
-          viewBox="0 0 200 200"
-          className="w-full h-full"
-          fill="none"
-          stroke="rgba(100,180,255,0.12)"
-          strokeWidth="0.4"
-        >
-          {/* Longitude lines */}
-          <ellipse cx="100" cy="100" rx="50" ry="98" />
-          <ellipse cx="100" cy="100" rx="80" ry="98" />
-          <ellipse cx="100" cy="100" rx="98" ry="98" />
-          <ellipse
-            cx="100"
-            cy="100"
-            rx="30"
-            ry="98"
-            transform="rotate(30 100 100)"
-          />
-          <ellipse
-            cx="100"
-            cy="100"
-            rx="70"
-            ry="98"
-            transform="rotate(-20 100 100)"
-          />
-          {/* Latitude lines */}
-          <ellipse cx="100" cy="60" rx="82" ry="20" />
-          <ellipse cx="100" cy="100" rx="98" ry="24" />
-          <ellipse cx="100" cy="140" rx="82" ry="20" />
-          <ellipse cx="100" cy="75" rx="92" ry="22" />
-          <ellipse cx="100" cy="125" rx="92" ry="22" />
-        </svg>
-      </div>
-
-      {/* Specular highlight */}
-      <div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.08) 0%, transparent 50%)",
-        }}
-      />
-
-      {/* Atmosphere edge glow */}
-      <div
-        className="absolute inset-[-2px] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, transparent 48%, rgba(59,130,246,0.1) 52%, transparent 56%)",
-        }}
-      />
+    <div className="w-full h-full">
+      <Canvas
+        camera={{ fov: 40, position: [0, 0, 5] }}
+        style={{ width: "100%", height: "100%" }}
+        gl={{ antialias: true }}
+      >
+        <color attach="background" args={["#000000"]} />
+        <Suspense fallback={null}>
+          <Globe />
+        </Suspense>
+      </Canvas>
     </div>
   );
 }

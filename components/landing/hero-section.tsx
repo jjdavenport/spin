@@ -1,15 +1,20 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import { Globe, MapPin, Coins } from "lucide-react";
-import { HeroGlobe } from "./hero-globe";
 import { WaitlistForm } from "./waitlist-form";
+
+const HeroGlobe = dynamic(
+  () => import("./hero-globe").then((mod) => ({ default: mod.HeroGlobe })),
+  { ssr: false }
+);
 
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
-      {/* Globe background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30 sm:opacity-40">
-        <div className="animate-float">
-          <HeroGlobe />
-        </div>
+      {/* 3D Globe background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <HeroGlobe />
       </div>
 
       {/* Content */}
