@@ -128,3 +128,66 @@
     @apply font-sans;
   }
 }
+
+/* Reveal overlay animations */
+@keyframes reveal-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes reveal-image {
+  from { opacity: 0; transform: scale(1.08); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes reveal-text-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal-stagger-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marker-drop {
+  0% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+  60% { opacity: 1; transform: translateY(4px) scale(1.1); }
+  80% { transform: translateY(-2px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse-ring {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.5); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@layer utilities {
+  .animate-reveal-backdrop {
+    animation: reveal-backdrop 0.6s ease-out both;
+  }
+  .animate-reveal-image {
+    animation: reveal-image 0.8s ease-out both;
+  }
+  .animate-reveal-text-up {
+    animation: reveal-text-up 0.6s ease-out both;
+  }
+  .animate-reveal-stagger-in {
+    animation: reveal-stagger-in 0.5s ease-out both;
+  }
+  .animate-marker-drop {
+    animation: marker-drop 0.5s ease-out both;
+  }
+  .animate-pulse-ring {
+    animation: pulse-ring 1.5s ease-out infinite;
+  }
+  .animate-shimmer {
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+}

@@ -76,6 +76,8 @@ export const DESTINATIONS: Destination[] = [
 // In-memory mock state
 let mockCredits = 3;
 let mockHistory: (SpinHistoryEntry & { destination: Destination })[] = [];
+let mockSavedDestinations: Set<string> = new Set();
+let mockEmailSubscriptions: { id: string; email: string; destination_id: string; created_at: string }[] = [];
 
 export function getMockBalance(): number {
   return mockCredits;
@@ -117,4 +119,39 @@ export function addMockSpinHistory(
 
 export function getMockHistory() {
   return mockHistory;
+}
+
+export function saveMockDestination(id: string): void {
+  mockSavedDestinations.add(id);
+}
+
+export function unsaveMockDestination(id: string): void {
+  mockSavedDestinations.delete(id);
+}
+
+export function getMockSavedDestinations(): string[] {
+  return Array.from(mockSavedDestinations);
+}
+
+export function isMockDestinationSaved(id: string): boolean {
+  return mockSavedDestinations.has(id);
+}
+
+export function addMockEmailSubscription(
+  email: string,
+  destinationId: string
+): { id: string; email: string; destination_id: string; created_at: string } {
+  const existing = mockEmailSubscriptions.find(
+    (s) => s.email === email && s.destination_id === destinationId
+  );
+  if (existing) return existing;
+
+  const entry = {
+    id: crypto.randomUUID(),
+    email,
+    destination_id: destinationId,
+    created_at: new Date().toISOString(),
+  };
+  mockEmailSubscriptions.push(entry);
+  return entry;
 }

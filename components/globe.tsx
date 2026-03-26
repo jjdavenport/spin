@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Destination } from "@/lib/types";
+import { Destination, SpinPhase } from "@/lib/types";
 
 const ReactGlobe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -11,8 +11,8 @@ interface GlobeProps {
   destinations: Destination[];
   selectedRegion: string | null;
   spinTarget: Destination | null;
-  isSpinning: boolean;
-  onSpinComplete: () => void;
+  phase: SpinPhase;
+  onPhaseChange: (phase: SpinPhase) => void;
 }
 
 // Self-hosted high-res NASA textures (public domain)
@@ -57,14 +57,15 @@ export default function Globe({
   destinations,
   selectedRegion,
   spinTarget,
-  isSpinning,
-  onSpinComplete,
+  phase,
+  onPhaseChange,
 }: GlobeProps) {
   const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const cloudsRef = useRef<any>(null);
   const frameRef = useRef<number>(0);
+  const [markerData, setMarkerData] = useState<Destination[]>([]);
 
   // Responsive sizing
   useEffect(() => {
@@ -92,7 +93,6 @@ export default function Globe({
     const texLoader = new THREE.TextureLoader();
 
     // Replace default lights with a single directional sun
-    // so one hemisphere is dark (night lights visible) and one is lit
     const existingLights = scene.children.filter((c: any) => c.isLight);
     existingLights.forEach((l: any) => scene.remove(l));
 
@@ -100,7 +100,6 @@ export default function Globe({
     sun.position.set(1, 0.3, 0.5);
     scene.add(sun);
 
-    // Very dim ambient so the dark side isn't completely black
     const ambient = new THREE.AmbientLight(0x111122, 0.3);
     scene.add(ambient);
 
@@ -157,9 +156,11 @@ export default function Globe({
     if (globeRef.current) {
       const controls = globeRef.current.controls();
       if (controls) {
-        controls.autoRotate = !isSpinning;
+        const isAnimating = phase === "spinning" || phase === "revealing";
+        controls.autoRotate = phase === "idle";
         controls.autoRotateSpeed = 0.4;
-        controls.enableZoom = true;
+        controls.enableZoom = !isAnimating;
+        controls.enableRotate = !isAnimating;
         controls.enableDamping = true;
         controls.dampingFactor = 0.1;
         controls.minDistance = 150;
@@ -175,38 +176,115 @@ export default function Globe({
     };
     animateClouds();
     return () => cancelAnimationFrame(frameRef.current);
-  }, [isSpinning]);
+  }, [phase]);
 
-  // Spin animation
+  // Multi-step spin animation
   useEffect(() => {
-    if (spinTarget && globeRef.current && isSpinning) {
-      const randomLng = Math.random() * 360 - 180;
-      globeRef.current.pointOfView(
-        { lat: Math.random() * 60 - 30, lng: randomLng, altitude: 2.5 },
-        1000
-      );
+    if (!spinTarget || !globeRef.current || phase !== "spinning") return;
 
-      const flyToTarget = setTimeout(() => {
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+
+    // Clear marker during spin
+    setMarkerData([]);
+
+    // Step 1 (0-500ms): Whip to random far point
+    const randomLat1 = Math.random() * 120 - 60;
+    const randomLng1 = Math.random() * 360 - 180;
+    globeRef.current.pointOfView(
+      { lat: randomLat1, lng: randomLng1, altitude: 3.0 },
+      500
+    );
+
+    // Step 2 (500-1200ms): Fly through intermediate point
+    timeouts.push(
+      setTimeout(() => {
+        if (!globeRef.current) return;
+        const randomLat2 = Math.random() * 100 - 50;
+        const randomLng2 = Math.random() * 360 - 180;
+        globeRef.current.pointOfView(
+          { lat: randomLat2, lng: randomLng2, altitude: 2.5 },
+          700
+        );
+      }, 500)
+    );
+
+    // Step 3 (1200-3200ms): Fly to target with deceleration
+    timeouts.push(
+      setTimeout(() => {
+        if (!globeRef.current) return;
         globeRef.current.pointOfView(
           {
             lat: spinTarget.latitude,
             lng: spinTarget.longitude,
             altitude: 1.8,
           },
-          2500
+          2000
         );
-      }, 1200);
+      }, 1200)
+    );
 
-      const complete = setTimeout(() => {
-        onSpinComplete();
-      }, 4000);
+    // Step 4 (3200-4500ms): Slow zoom in for reveal close-up
+    timeouts.push(
+      setTimeout(() => {
+        if (!globeRef.current) return;
+        // Show marker as we arrive
+        setMarkerData([spinTarget]);
+        globeRef.current.pointOfView(
+          {
+            lat: spinTarget.latitude,
+            lng: spinTarget.longitude,
+            altitude: 0.8,
+          },
+          1300
+        );
+        onPhaseChange("revealing");
+      }, 3200)
+    );
 
-      return () => {
-        clearTimeout(flyToTarget);
-        clearTimeout(complete);
-      };
+    // Step 5 (5000ms): Reveal complete
+    timeouts.push(
+      setTimeout(() => {
+        onPhaseChange("revealed");
+      }, 5000)
+    );
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, [spinTarget, phase, onPhaseChange]);
+
+  // Clear marker when resetting
+  useEffect(() => {
+    if (phase === "idle") {
+      setMarkerData([]);
     }
-  }, [spinTarget, isSpinning, onSpinComplete]);
+  }, [phase]);
+
+  // Custom HTML marker element
+  const markerElement = useCallback((d: any) => {
+    const el = document.createElement("div");
+    el.innerHTML = `
+      <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+        <div style="
+          width: 12px; height: 12px;
+          background: #f43f5e;
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 12px rgba(244, 63, 94, 0.6);
+          animation: marker-drop 0.5s ease-out both;
+        "></div>
+        <div style="
+          position: absolute; top: 50%; left: 50%;
+          width: 24px; height: 24px;
+          margin-left: -12px; margin-top: -12px;
+          border: 2px solid rgba(244, 63, 94, 0.5);
+          border-radius: 50%;
+          animation: pulse-ring 1.5s ease-out infinite;
+        "></div>
+      </div>
+    `;
+    return el;
+  }, []);
 
   return (
     <div ref={containerRef} className="w-full h-full min-h-[300px]">
@@ -222,6 +300,11 @@ export default function Globe({
           atmosphereAltitude={0.18}
           animateIn={true}
           onGlobeReady={handleGlobeReady}
+          htmlElementsData={markerData}
+          htmlLat={(d: any) => d.latitude}
+          htmlLng={(d: any) => d.longitude}
+          htmlElement={markerElement}
+          htmlAltitude={0.01}
         />
       )}
     </div>

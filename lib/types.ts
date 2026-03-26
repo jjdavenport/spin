@@ -35,3 +35,29 @@ export interface SpinHistoryEntry {
   created_at: string;
   destination?: Destination;
 }
+
+export type SpinPhase = "idle" | "spinning" | "revealing" | "revealed";
+
+export interface ItineraryDay {
+  day: number;
+  title: string;
+  description: string;
+  booking_type?: "experience" | "hotel" | "transport";
+}
+
+export interface DestinationDetails {
+  unsplash_photo_id: string;
+  airport_code: string;
+  best_time_to_visit: string;
+  visa_info: string;
+  budget_range: { low: number; high: number; currency: string };
+  highlights: string[];
+  itinerary: ItineraryDay[];
+}
+
+export interface EmailSubscription {
+  id: string;
+  email: string;
+  destination_id: string;
+  created_at: string;
+}
