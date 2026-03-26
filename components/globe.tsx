@@ -66,6 +66,8 @@ export default function Globe({
   const cloudsRef = useRef<any>(null);
   const frameRef = useRef<number>(0);
   const [markerData, setMarkerData] = useState<Destination[]>([]);
+  const phaseRef = useRef<SpinPhase>(phase);
+  phaseRef.current = phase;
 
   // Responsive sizing
   useEffect(() => {
@@ -178,9 +180,9 @@ export default function Globe({
     return () => cancelAnimationFrame(frameRef.current);
   }, [phase]);
 
-  // Multi-step spin animation
+  // Multi-step spin animation — only triggers when spinTarget changes
   useEffect(() => {
-    if (!spinTarget || !globeRef.current || phase !== "spinning") return;
+    if (!spinTarget || !globeRef.current || phaseRef.current !== "spinning") return;
 
     const timeouts: ReturnType<typeof setTimeout>[] = [];
 
@@ -251,7 +253,8 @@ export default function Globe({
     return () => {
       timeouts.forEach(clearTimeout);
     };
-  }, [spinTarget, phase, onPhaseChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spinTarget]);
 
   // Clear marker when resetting
   useEffect(() => {
