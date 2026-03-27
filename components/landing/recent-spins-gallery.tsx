@@ -2,24 +2,35 @@
 
 import { RECENT_SPINS } from "@/lib/mock-social-data";
 import { getUnsplashUrl } from "@/components/destination-hero-image";
+import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 
 export function RecentSpinsGallery() {
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
   // Double the array for seamless marquee loop
   const spins = [...RECENT_SPINS, ...RECENT_SPINS];
 
   return (
-    <section className="py-16 sm:py-20 overflow-hidden">
+    <section ref={ref} className="py-16 sm:py-20 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 mb-8">
-        <p className="text-center text-sm uppercase tracking-[0.2em] text-muted-foreground/60 font-medium mb-2">
-          Where people are landing
-        </p>
-        <h2 className="text-center text-2xl sm:text-3xl font-extrabold tracking-tight">
-          Recent spins from the community
-        </h2>
+        <div
+          className={isVisible ? "animate-reveal-slide-up" : "opacity-0"}
+        >
+          <p className="text-center text-sm uppercase tracking-[0.2em] text-muted-foreground/60 font-medium mb-2">
+            Where people are landing
+          </p>
+          <h2 className="text-center text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Recent spins from the community
+          </h2>
+        </div>
       </div>
 
       {/* Marquee container */}
-      <div className="relative">
+      <div
+        className={`relative transition-opacity duration-700 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ transitionDelay: "0.3s" }}
+      >
         {/* Fade edges */}
         <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />

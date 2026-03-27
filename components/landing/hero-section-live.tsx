@@ -38,6 +38,12 @@ export function HeroSectionLive({
     "All Regions"
   );
   const globeRef = useRef<HeroGlobeHandle>(null);
+  const hasAnimated = useRef(false);
+
+  // Mark entrance animations as played after first render
+  useEffect(() => {
+    hasAnimated.current = true;
+  }, []);
 
   const { playWhoosh, playImpact, playChime } = useSoundEffects();
 
@@ -131,18 +137,34 @@ export function HeroSectionLive({
           }`}
         >
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-[0.9]">
-            Spin the Globe.
+            <span
+              className={hasAnimated.current ? "" : "opacity-0 animate-hero-text-rise"}
+              style={hasAnimated.current ? undefined : { animationDelay: "0.3s" }}
+            >
+              Spin the Globe.
+            </span>
             <br />
-            <span className="text-muted-foreground/80">Book the Trip.</span>
+            <span
+              className={`text-muted-foreground/80 ${hasAnimated.current ? "" : "opacity-0 animate-hero-text-rise"}`}
+              style={hasAnimated.current ? undefined : { animationDelay: "0.6s" }}
+            >
+              Book the Trip.
+            </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted-foreground/70 max-w-md mx-auto mt-4 font-light">
+          <p
+            className={`text-base sm:text-lg text-muted-foreground/70 max-w-md mx-auto mt-4 font-light ${hasAnimated.current ? "" : "opacity-0 animate-reveal-slide-up"}`}
+            style={hasAnimated.current ? undefined : { animationDelay: "0.9s" }}
+          >
             A random destination generator that turns spontaneity into
             adventure. Spin, discover, and book — all in one place.
           </p>
 
           {/* Region Filter */}
-          <div className="pointer-events-auto mt-6 flex justify-center">
+          <div
+            className={`pointer-events-auto mt-6 flex justify-center ${hasAnimated.current ? "" : "opacity-0 animate-reveal-slide-up"}`}
+            style={hasAnimated.current ? undefined : { animationDelay: "1.1s" }}
+          >
             <RegionFilter
               value={selectedRegion}
               onChange={setSelectedRegion}
@@ -151,7 +173,10 @@ export function HeroSectionLive({
           </div>
 
           {/* Spin Button */}
-          <div className="pointer-events-auto mt-4">
+          <div
+            className={`pointer-events-auto mt-4 ${hasAnimated.current ? "" : "opacity-0 animate-reveal-slide-up"}`}
+            style={hasAnimated.current ? undefined : { animationDelay: "1.3s" }}
+          >
             <Button
               onClick={handleSpin}
               disabled={isActive}
@@ -189,11 +214,17 @@ export function HeroSectionLive({
 
           {/* Stats */}
           <div className="flex items-center justify-center flex-wrap gap-4 sm:gap-8 mt-8 text-sm text-muted-foreground/60">
-            <div className="flex items-center gap-2">
+            <div
+              className={`flex items-center gap-2 ${hasAnimated.current ? "" : "opacity-0 animate-hero-text-rise"}`}
+              style={hasAnimated.current ? undefined : { animationDelay: "1.5s" }}
+            >
               <GlobeIcon className="h-4 w-4" />
               57 Destinations
             </div>
-            <div className="flex items-center gap-2">
+            <div
+              className={`flex items-center gap-2 ${hasAnimated.current ? "" : "opacity-0 animate-hero-text-rise"}`}
+              style={hasAnimated.current ? undefined : { animationDelay: "1.6s" }}
+            >
               <MapPin className="h-4 w-4" />
               7 Regions
             </div>

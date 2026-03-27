@@ -1,4 +1,7 @@
+"use client";
+
 import { AtSign, Mail, Globe, ExternalLink } from "lucide-react";
+import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 
 const PRODUCT_LINKS = [
   { label: "How It Works", href: "#how-it-works" },
@@ -19,10 +22,16 @@ const CONNECT_LINKS = [
 ];
 
 export function FooterExpanded() {
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <footer className="border-t border-border/30 bg-muted/5 py-12 sm:py-16 px-4">
+    <footer ref={ref} className="border-t border-border/30 bg-muted/5 py-12 sm:py-16 px-4">
       <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12">
+        <div
+          className={`grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12 ${
+            isVisible ? "animate-reveal-slide-up" : "opacity-0"
+          }`}
+        >
           {/* Brand */}
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2 mb-3">
