@@ -1,6 +1,12 @@
 "use client";
 
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 const faqs = [
   {
@@ -49,11 +55,11 @@ export function FaqSection() {
           </h2>
         </div>
 
-        <div className="divide-y divide-border/50">
+        <Accordion>
           {faqs.map((faq, i) => (
-            <details
+            <AccordionItem
               key={faq.question}
-              className={`group ${
+              className={`border-border/50 ${
                 isVisible
                   ? i % 2 === 0
                     ? "animate-reveal-slide-left"
@@ -66,18 +72,17 @@ export function FaqSection() {
                   : undefined
               }
             >
-              <summary className="flex items-center justify-between py-5 cursor-pointer list-none text-left font-medium hover:text-primary transition-colors">
+              <AccordionTrigger className="py-5 font-medium hover:no-underline hover:text-primary transition-colors">
                 {faq.question}
-                <span className="ml-4 text-muted-foreground group-open:rotate-45 transition-transform duration-200 text-lg">
-                  +
-                </span>
-              </summary>
-              <p className="pb-5 text-sm text-muted-foreground leading-relaxed">
-                {faq.answer}
-              </p>
-            </details>
+              </AccordionTrigger>
+              <AccordionContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  {faq.answer}
+                </p>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
     </section>
   );
