@@ -55,10 +55,11 @@ export function FaqSection() {
           </h2>
         </div>
 
-        <Accordion>
+        <Accordion type="single" collapsible>
           {faqs.map((faq, i) => (
             <AccordionItem
               key={faq.question}
+              value={faq.question}
               className={`border-border/50 ${
                 isVisible
                   ? i % 2 === 0

@@ -183,11 +183,13 @@ export const HeroGlobeInteractive = forwardRef<HeroGlobeHandle>(
       //   UV x=0.25 → vertex at (0, y, +r) → faces camera (+Z)
       //   UV x=0.25 maps to longitude -90 in the Blue Marble texture.
       // So at Y rotation = 0, longitude -90 faces the camera.
+      // Positive Y rotation moves the view WESTWARD (more negative longitude):
+      //   Lng_facing = -90 - Y_rot × (180/π)
       // To bring targetLng to face the camera:
-      //   targetRot = (targetLng + 90) * π/180
+      //   Y_rot = -(targetLng + 90) × π/180
       const TWO_PI = 2 * Math.PI;
       // Normalize target rotation to [0, 2π)
-      const targetRot = (((targetLng + 90) * (Math.PI / 180)) % TWO_PI + TWO_PI) % TWO_PI;
+      const targetRot = (((-(targetLng + 90)) * (Math.PI / 180)) % TWO_PI + TWO_PI) % TWO_PI;
 
       // Find forward offset from current rotation (always spin forward)
       const currentMod = ((currentY % TWO_PI) + TWO_PI) % TWO_PI;
