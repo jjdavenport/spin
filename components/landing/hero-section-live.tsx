@@ -113,17 +113,6 @@ export function HeroSectionLive({
       {/* Gradient overlays for text readability */}
       <div className="absolute inset-0 pointer-events-none bg-linear-to-b from-black/60 via-transparent to-black/70" />
 
-      {/* Top controls */}
-      <div className="relative z-10 flex items-center justify-between px-4 pt-18 sm:pt-20">
-        <div className="pointer-events-auto">
-          <RegionFilter
-            value={selectedRegion}
-            onChange={setSelectedRegion}
-            disabled={isActive}
-          />
-        </div>
-      </div>
-
       {/* Center content — headline + spin */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center pointer-events-none px-4">
         {/* Returning user banner */}
@@ -152,8 +141,17 @@ export function HeroSectionLive({
             adventure. Spin, discover, and book — all in one place.
           </p>
 
+          {/* Region Filter */}
+          <div className="pointer-events-auto mt-6 flex justify-center">
+            <RegionFilter
+              value={selectedRegion}
+              onChange={setSelectedRegion}
+              disabled={isActive}
+            />
+          </div>
+
           {/* Spin Button */}
-          <div className="pointer-events-auto mt-8">
+          <div className="pointer-events-auto mt-4">
             <Button
               onClick={handleSpin}
               disabled={isActive}
