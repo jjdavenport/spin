@@ -6,6 +6,7 @@ import {
   getSkyscannerLink,
   getBookingLink,
   getViatorLink,
+  trackAffiliateClick,
 } from "@/lib/affiliate-links";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -119,6 +120,7 @@ export function TripBuilder({ destination }: TripBuilderProps) {
                   href={getSkyscannerLink(details.airport_code)}
                   target="_blank"
                   rel="noopener sponsored"
+                  onClick={() => trackAffiliateClick("skyscanner", destination.name, "flights-tab")}
                 >
                   <Button className="w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white">
                     Search Flights on Skyscanner
@@ -189,6 +191,7 @@ export function TripBuilder({ destination }: TripBuilderProps) {
                       )}
                       target="_blank"
                       rel="noopener sponsored"
+                      onClick={() => trackAffiliateClick("booking", destination.name, `hotel-${hotel.tier.toLowerCase()}`)}
                     >
                       <Button
                         variant="secondary"
@@ -228,6 +231,7 @@ export function TripBuilder({ destination }: TripBuilderProps) {
                           )}
                           target="_blank"
                           rel="noopener sponsored"
+                          onClick={() => trackAffiliateClick("viator", destination.name, `experience-day-${day.day}`)}
                         >
                           <Button
                             variant="link"
@@ -248,6 +252,7 @@ export function TripBuilder({ destination }: TripBuilderProps) {
                 href={getViatorLink(destination.name)}
                 target="_blank"
                 rel="noopener sponsored"
+                onClick={() => trackAffiliateClick("viator", destination.name, "experiences-browse-all")}
               >
                 <Button variant="secondary" className="w-full mt-2">
                   Browse All Experiences in {destination.name}

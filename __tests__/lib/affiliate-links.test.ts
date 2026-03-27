@@ -3,38 +3,35 @@ import {
   getSkyscannerLink,
   getBookingLink,
   getViatorLink,
+  AFFILIATE_CONFIG,
 } from "@/lib/affiliate-links";
 
 describe("getSkyscannerLink", () => {
   it("returns correct base URL with lowercased airport code", () => {
-    expect(getSkyscannerLink("CDG")).toBe(
+    expect(getSkyscannerLink("CDG")).toContain(
       "https://www.skyscanner.com/transport/flights/NEAR/cdg/"
     );
   });
 
   it("handles already lowercase airport code", () => {
-    expect(getSkyscannerLink("jfk")).toBe(
+    expect(getSkyscannerLink("jfk")).toContain(
       "https://www.skyscanner.com/transport/flights/NEAR/jfk/"
     );
   });
 
-  it("appends affiliateTag when provided", () => {
-    expect(getSkyscannerLink("CDG", "myTag")).toBe(
-      "https://www.skyscanner.com/transport/flights/NEAR/cdg/?associateId=myTag"
+  it("includes affiliate ID from config", () => {
+    const url = getSkyscannerLink("CDG");
+    expect(url).toContain(
+      `associateId=${AFFILIATE_CONFIG.skyscanner.affiliateId}`
     );
-  });
-
-  it("omits affiliateTag query param when not provided", () => {
-    const url = getSkyscannerLink("LAX");
-    expect(url).not.toContain("associateId");
   });
 });
 
 describe("getBookingLink", () => {
   it("encodes destination and country", () => {
     const url = getBookingLink("Paris", "France");
-    expect(url).toBe(
-      `https://www.booking.com/searchresults.html?ss=${encodeURIComponent("Paris, France")}`
+    expect(url).toContain(
+      `ss=${encodeURIComponent("Paris, France")}`
     );
   });
 
@@ -43,32 +40,26 @@ describe("getBookingLink", () => {
     expect(url).toContain(encodeURIComponent("Salar de Uyuni, Bolivia"));
   });
 
-  it("appends affiliate tag", () => {
-    const url = getBookingLink("Tokyo", "Japan", "aid123");
-    expect(url).toContain("&aid=aid123");
-  });
-
-  it("omits affiliate tag when not provided", () => {
+  it("includes affiliate ID from config", () => {
     const url = getBookingLink("Tokyo", "Japan");
-    expect(url).not.toContain("&aid=");
+    expect(url).toContain(
+      `aid=${AFFILIATE_CONFIG.booking.affiliateId}`
+    );
   });
 });
 
 describe("getViatorLink", () => {
   it("encodes destination name", () => {
     const url = getViatorLink("Machu Picchu");
-    expect(url).toBe(
-      `https://www.viator.com/searchResults/all?text=${encodeURIComponent("Machu Picchu")}`
+    expect(url).toContain(
+      `text=${encodeURIComponent("Machu Picchu")}`
     );
   });
 
-  it("appends affiliate tag", () => {
-    const url = getViatorLink("Bali", "pid456");
-    expect(url).toContain("&pid=pid456");
-  });
-
-  it("omits affiliate tag when not provided", () => {
+  it("includes affiliate ID from config", () => {
     const url = getViatorLink("Bali");
-    expect(url).not.toContain("&pid=");
+    expect(url).toContain(
+      `pid=${AFFILIATE_CONFIG.viator.affiliateId}`
+    );
   });
 });

@@ -12,7 +12,7 @@ const PRODUCT_LINKS = [
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
-  { label: "Affiliate Disclosure", href: "#" },
+  { label: "Affiliate Disclosure", href: "/affiliate-disclosure" },
 ];
 
 const CONNECT_LINKS = [
