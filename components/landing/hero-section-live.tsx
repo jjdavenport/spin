@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Globe as GlobeIcon, MapPin, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RegionFilter from "@/components/region-filter";
@@ -41,22 +41,10 @@ export function HeroSectionLive({
 
   const { playWhoosh, playImpact, playChime } = useSoundEffects();
 
-  // Control globe spin speed based on phase
+  // Reset globe when returning to idle
   useEffect(() => {
-    if (!globeRef.current) return;
-    switch (phase) {
-      case "idle":
-        globeRef.current.setSpinSpeed(1);
-        break;
-      case "spinning":
-        globeRef.current.setSpinSpeed(12);
-        break;
-      case "revealing":
-        globeRef.current.setSpinSpeed(3);
-        break;
-      case "revealed":
-        globeRef.current.setSpinSpeed(0.5);
-        break;
+    if (phase === "idle" && globeRef.current) {
+      globeRef.current.reset();
     }
   }, [phase]);
 
@@ -83,15 +71,19 @@ export function HeroSectionLive({
       }
 
       const data = await res.json();
+      const dest: Destination = data.destination;
 
       // Preload hero image
-      const details = DESTINATION_DETAILS[data.destination.id];
+      const details = DESTINATION_DETAILS[dest.id];
       if (details) {
         const img = new Image();
         img.src = getUnsplashUrl(details.unsplash_photo_id);
       }
 
-      // Simulate globe "landing" — spin fast for 2s, then decelerate
+      // Start physical globe spin toward destination coordinates
+      globeRef.current?.spin(dest.latitude, dest.longitude);
+
+      // Phase transitions aligned with globe deceleration
       setTimeout(() => {
         setPhase("revealing");
         playImpact();
@@ -100,7 +92,7 @@ export function HeroSectionLive({
       setTimeout(() => {
         setPhase("revealed");
         playChime();
-        onDestinationRevealed(data.destination);
+        onDestinationRevealed(dest);
       }, 3200);
     } catch {
       toast.error("Something went wrong. Please try again.");

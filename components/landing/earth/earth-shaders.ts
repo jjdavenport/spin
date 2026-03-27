@@ -12,7 +12,7 @@ varying vec3 wPos;
 
 void main() {
   vUv = uv;
-  vNormal = normal;
+  vNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
   wPos = (modelMatrix * vec4(position, 1.0)).xyz;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
@@ -47,14 +47,14 @@ void main() {
   vec3 viewDirection = normalize(cameraPosition - wPos);
   float distanceToCamera = length(cameraPosition - wPos);
 
-  // Scroll UVs horizontally to simulate globe rotation
-  // No fract() — RepeatWrapping on the texture handles the wrap seamlessly
-  vec2 spinUv = vec2(vUv.x - uTime * 0.005, vUv.y);
+  // Cloud UVs drift slowly for ambient motion; day/night textures are
+  // locked to the mesh so mesh Y-rotation controls geographic position.
+  vec2 cloudUv = vec2(vUv.x - uTime * 0.005, vUv.y);
 
   vec3 result = vec3(0.0);
 
   // diffuse color
-  vec3 dayColor = texture2D(dayMap, spinUv).rgb;
+  vec3 dayColor = texture2D(dayMap, vUv).rgb;
   float rawLambertFactor = dot(normal, vLightDirection);
 
   // sun light
@@ -64,7 +64,7 @@ void main() {
   result = dayColor * sunLightFactor;
 
   // night map
-  vec3 nightColor = texture2D(nightMap, spinUv).rgb;
+  vec3 nightColor = texture2D(nightMap, vUv).rgb;
   float nightLightsFactor = autoClamp(valueRemap(rawSunLightFactor, 0.0, 0.15, 0.0, 1.0));
   nightColor = nightColor * (1.0 - nightLightsFactor);
   result += nightColor;
@@ -77,14 +77,14 @@ void main() {
   noiseFactor = noiseFactor * 0.5 * distanceFactor;
 
   // clouds
-  float cloudFactor = length(texture2D(cloudMap, spinUv).rgb);
+  float cloudFactor = length(texture2D(cloudMap, cloudUv).rgb);
   float cloudNoiseFactor = clamp(valueRemap(cloudFactor, 0.0, 0.5, 0.5, 1.0) * noiseFactor, 0.0, 1.0);
   cloudFactor = clamp(cloudFactor - cloudNoiseFactor, 0.0, 1.0);
   vec3 cloudColor = vec3(0.9);
 
   // clouds normals
   float cloudNormalScale = 0.01;
-  vec3 cloudNormal = perturbNormalArb( wPos, normal, dHdxy_fwd(spinUv, cloudMap, cloudNormalScale) );
+  vec3 cloudNormal = perturbNormalArb( wPos, normal, dHdxy_fwd(cloudUv, cloudMap, cloudNormalScale) );
   float cloudNormalFactor = dot(cloudNormal, vLightDirection);
   float cloudShadowFactor = clamp(
     valueRemap(cloudNormalFactor, 0.0, 0.3, 0.3, 1.0),
