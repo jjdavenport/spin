@@ -18,6 +18,7 @@ interface AuthDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultMode?: "sign-in" | "sign-up";
+  onModeChange?: (mode: "sign-in" | "sign-up") => void;
 }
 
 function GoogleIcon() {
@@ -43,7 +44,7 @@ function GoogleIcon() {
   );
 }
 
-export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: AuthDialogProps) {
+export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onModeChange }: AuthDialogProps) {
   const [mode, setMode] = useState(defaultMode);
   const [loading, setLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
@@ -267,7 +268,14 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: Auth
             {isSignIn ? "Don\u2019t have an account?" : "Already have an account?"}{" "}
             <button
               type="button"
-              onClick={() => setMode(isSignIn ? "sign-up" : "sign-in")}
+              onClick={() => {
+                const newMode = isSignIn ? "sign-up" : "sign-in";
+                if (onModeChange) {
+                  onModeChange(newMode);
+                } else {
+                  setMode(newMode);
+                }
+              }}
               className="font-medium text-white/70 underline underline-offset-4 transition-colors hover:text-white"
             >
               {isSignIn ? "Sign up" : "Sign in"}

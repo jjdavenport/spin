@@ -92,6 +92,14 @@ export default function LandingPage() {
     setAuthDialogOpen(true);
   }, []);
 
+  const handleAuthModeChange = useCallback((newMode: "sign-in" | "sign-up") => {
+    setAuthDialogOpen(false);
+    setTimeout(() => {
+      setAuthDialogMode(newMode);
+      setAuthDialogOpen(true);
+    }, 200);
+  }, []);
+
   // Don't render until mode is loaded from localStorage
   if (!isLoaded) {
     return (
@@ -215,6 +223,7 @@ export default function LandingPage() {
         open={authDialogOpen}
         onOpenChange={setAuthDialogOpen}
         defaultMode={authDialogMode}
+        onModeChange={handleAuthModeChange}
       />
     </div>
   );
