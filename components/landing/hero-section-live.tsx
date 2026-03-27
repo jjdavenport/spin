@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useRef, useEffect } from "react";
-import { Globe as GlobeIcon, MapPin, Sparkles } from "lucide-react";
+import { Globe as GlobeIcon, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RegionFilter from "@/components/region-filter";
 import { Destination, SpinPhase } from "@/lib/types";
@@ -182,10 +182,7 @@ export function HeroSectionLive({
                   Spinning...
                 </span>
               ) : (
-                <span className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  Spin the Globe
-                </span>
+                "Spin the Globe"
               )}
             </Button>
           </div>
@@ -199,10 +196,6 @@ export function HeroSectionLive({
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
               7 Regions
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              Free to Spin
             </div>
           </div>
         </div>
