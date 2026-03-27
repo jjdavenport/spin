@@ -1,6 +1,9 @@
+"use client";
+
 import { RotateCcw, Map, Plane } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 
 const steps = [
   {
@@ -24,10 +27,16 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <section className="px-4 py-24 sm:py-32">
+    <section className="px-4 py-24 sm:py-32" ref={ref}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 sm:mb-16">
+        <div
+          className={`text-center mb-12 sm:mb-16 ${
+            isVisible ? "animate-reveal-slide-up" : "opacity-0"
+          }`}
+        >
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-3">
             How It Works
           </p>
@@ -40,7 +49,12 @@ export function HowItWorks() {
           {steps.map((step, i) => (
             <Card
               key={step.title}
-              className="relative border-border/50 bg-card/50 backdrop-blur-sm"
+              className={`relative border-border/50 bg-card/50 backdrop-blur-sm ${
+                isVisible ? "animate-reveal-card-flip" : "opacity-0"
+              }`}
+              style={
+                isVisible ? { animationDelay: `${0.2 + i * 0.2}s` } : undefined
+              }
             >
               <CardContent className="pt-8 pb-6 px-6 text-center">
                 <Badge
@@ -49,7 +63,16 @@ export function HowItWorks() {
                 >
                   {String(i + 1).padStart(2, "0")}
                 </Badge>
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
+                <div
+                  className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4 ${
+                    isVisible ? "animate-icon-spin-in" : "opacity-0"
+                  }`}
+                  style={
+                    isVisible
+                      ? { animationDelay: `${0.4 + i * 0.2}s` }
+                      : undefined
+                  }
+                >
                   <step.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{step.title}</h3>

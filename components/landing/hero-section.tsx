@@ -20,33 +20,51 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 max-w-2xl mx-auto text-center space-y-6">
         <h1 className="text-5xl sm:text-7xl font-bold tracking-tighter">
-          Spin the Globe.
+          <span
+            className="inline-block opacity-0 animate-hero-text-rise"
+            style={{ animationDelay: "0.3s" }}
+          >
+            Spin the Globe.
+          </span>
           <br />
-          <span className="text-muted-foreground">Book the Trip.</span>
+          <span
+            className="inline-block text-muted-foreground opacity-0 animate-hero-text-rise"
+            style={{ animationDelay: "0.6s" }}
+          >
+            Book the Trip.
+          </span>
         </h1>
 
-        <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+        <p
+          className="text-lg text-muted-foreground max-w-lg mx-auto opacity-0 animate-reveal-slide-up"
+          style={{ animationDelay: "0.9s" }}
+        >
           A random destination generator that turns spontaneity into real trips.
           Spin, discover, and book — all in one place.
         </p>
 
-        <div className="flex justify-center pt-2">
+        <div
+          className="flex justify-center pt-2 opacity-0 animate-reveal-slide-up"
+          style={{ animationDelay: "1.1s" }}
+        >
           <WaitlistForm />
         </div>
 
         <div className="flex items-center justify-center flex-wrap gap-4 sm:gap-8 pt-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4" />
-            57 Destinations
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            7 Regions
-          </div>
-          <div className="flex items-center gap-2">
-            <Coins className="h-4 w-4" />
-            From $2.99
-          </div>
+          {[
+            { icon: Globe, label: "57 Destinations", delay: "1.3s" },
+            { icon: MapPin, label: "7 Regions", delay: "1.4s" },
+            { icon: Coins, label: "From $2.99", delay: "1.5s" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="flex items-center gap-2 opacity-0 animate-hero-text-rise"
+              style={{ animationDelay: stat.delay }}
+            >
+              <stat.icon className="h-4 w-4" />
+              {stat.label}
+            </div>
+          ))}
         </div>
       </div>
     </section>

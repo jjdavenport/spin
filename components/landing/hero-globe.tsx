@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useState, useEffect, useCallback } from "react";
 import {
   BackSide,
   SRGBColorSpace,
@@ -19,7 +19,14 @@ const LIGHT_DIR = new Vector3(1, 0, 0).applyAxisAngle(
   Math.PI * (13 / 180)
 );
 
-function Globe() {
+function GlobeLoaded({ onReady }: { onReady: () => void }) {
+  useEffect(() => {
+    onReady();
+  }, [onReady]);
+  return null;
+}
+
+function Globe({ onReady }: { onReady: () => void }) {
   const [dayTex, nightTex, cloudTex] = useLoader(TextureLoader, [
     "/textures/earth-blue-marble-8k.jpg",
     "/textures/earth-night-8k.jpg",
@@ -46,6 +53,7 @@ function Globe() {
 
   return (
     <group>
+      <GlobeLoaded onReady={onReady} />
       {/* Earth */}
       <mesh>
         <sphereGeometry args={[1, 200, 200]} />
@@ -71,8 +79,13 @@ function Globe() {
 }
 
 export function HeroGlobe() {
+  const [loaded, setLoaded] = useState(false);
+  const handleReady = useCallback(() => setLoaded(true), []);
+
   return (
-    <div className="w-full h-full">
+    <div
+      className={`w-full h-full ${loaded ? "animate-reveal-scale-up" : "opacity-0"}`}
+    >
       <Canvas
         camera={{ fov: 40, position: [0, 0, 5] }}
         style={{ width: "100%", height: "100%" }}
@@ -80,7 +93,7 @@ export function HeroGlobe() {
       >
         <color attach="background" args={["#000000"]} />
         <Suspense fallback={null}>
-          <Globe />
+          <Globe onReady={handleReady} />
         </Suspense>
       </Canvas>
     </div>

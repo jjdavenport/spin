@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plane, Hotel, Compass, Star } from "lucide-react";
+import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 
 const destination = {
   name: "Bali",
@@ -23,10 +26,16 @@ const bookingOptions = [
 ];
 
 export function ProductPreview() {
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
+
   return (
-    <section className="px-4 py-24 sm:py-32">
+    <section className="px-4 py-24 sm:py-32" ref={ref}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 sm:mb-16">
+        <div
+          className={`text-center mb-12 sm:mb-16 ${
+            isVisible ? "animate-reveal-slide-up" : "opacity-0"
+          }`}
+        >
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-3">
             What You&apos;ll Get
           </p>
@@ -39,9 +48,14 @@ export function ProductPreview() {
           </p>
         </div>
 
-        {/* Preview card */}
-        <div className="max-w-lg mx-auto">
-          <Card className="overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
+        {/* Preview card — 3D tilt-up reveal */}
+        <div className="max-w-lg mx-auto" style={{ perspective: "1000px" }}>
+          <Card
+            className={`overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm ${
+              isVisible ? "animate-reveal-tilt-up" : "opacity-0"
+            }`}
+            style={isVisible ? { animationDelay: "0.3s" } : undefined}
+          >
             {/* Hero image */}
             <div className="relative h-48 sm:h-56">
               <Image
@@ -83,12 +97,19 @@ export function ProductPreview() {
                 ))}
               </div>
 
-              {/* Booking buttons */}
+              {/* Booking buttons — stagger in after card lands */}
               <div className="grid grid-cols-3 gap-3 pt-2">
-                {bookingOptions.map((opt) => (
+                {bookingOptions.map((opt, i) => (
                   <div
                     key={opt.label}
-                    className="flex flex-col items-center gap-1.5 rounded-lg border border-border/50 py-3 px-2"
+                    className={`flex flex-col items-center gap-1.5 rounded-lg border border-border/50 py-3 px-2 ${
+                      isVisible ? "animate-reveal-slide-up" : "opacity-0"
+                    }`}
+                    style={
+                      isVisible
+                        ? { animationDelay: `${0.8 + i * 0.15}s` }
+                        : undefined
+                    }
                   >
                     <opt.icon className={`h-5 w-5 ${opt.color}`} />
                     <span className="text-xs font-medium">{opt.label}</span>

@@ -91,7 +91,7 @@ export default function LandingPage() {
   if (mode === "waitlist") {
     return (
       <div className="flex flex-col min-h-screen">
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-md">
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-md animate-nav-slide-down" style={{ animationDelay: "0.1s" }}>
           <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
             <span className="text-lg font-bold tracking-tight">Spin</span>
             <Link href="/login">
