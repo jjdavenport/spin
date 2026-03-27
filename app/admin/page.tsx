@@ -1,12 +1,10 @@
 import { getAdminStats } from "@/lib/mock-admin-data";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { StatCard } from "@/components/admin/stat-card";
 import { MiniBarChart } from "@/components/admin/mini-bar-chart";
 import { RegionBars } from "@/components/admin/region-bars";
 import { RecentSpinsTable, RecentSignupsTable } from "@/components/admin/recent-table";
 import { TopDestinations } from "@/components/admin/top-destinations";
-import Link from "next/link";
+import { AdminHeader } from "@/components/admin/admin-header";
 
 function UsersIcon() {
   return (
@@ -65,29 +63,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
-          <div className="flex items-center gap-3">
-            <Link href="/spin" className="text-lg font-bold tracking-tight">
-              Spin
-            </Link>
-            <Separator orientation="vertical" className="h-5" />
-            <span className="text-sm font-medium text-muted-foreground">
-              Admin Dashboard
-            </span>
-            <Badge variant="outline" className="text-[10px] py-0 text-amber-400 border-amber-400/30">
-              Mock Data
-            </Badge>
-          </div>
-          <Link
-            href="/spin"
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Back to App
-          </Link>
-        </div>
-      </header>
+      <AdminHeader />
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Overview Cards */}
