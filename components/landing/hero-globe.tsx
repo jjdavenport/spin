@@ -4,11 +4,23 @@ import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Suspense, useRef, useState, useEffect, useCallback } from "react";
 import {
   BackSide,
+  Group,
   RepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
 } from "three";
+
+// Earth rotation: ~2.5 min per revolution — slow enough to feel majestic,
+// fast enough to be noticeable. Real Earth is 24h; this is ~580× sped up,
+// similar to time-lapse ISS footage.
+const EARTH_ROTATION_SPEED = 0.04; // rad/s
+
+// Cloud drift rate relative to real-time. Multiplied by the shader's 0.005
+// UV/s factor, this gives ~0.0003 UV/s — clouds complete a full wrap in
+// ~55 min, roughly 5% of the globe rotation speed (matching real jet-stream
+// proportions relative to Earth's rotation).
+const CLOUD_DRIFT_RATE = 0.06;
 import { earthFragmentShader, earthVertexShader } from "./earth/earth-shaders";
 import {
   atmosphereFragmentShader,
@@ -28,6 +40,7 @@ function GlobeLoaded({ onReady }: { onReady: () => void }) {
 }
 
 function Globe({ onReady }: { onReady: () => void }) {
+  const groupRef = useRef<Group>(null);
   const [dayTex, nightTex, cloudTex] = useLoader(TextureLoader, [
     "/textures/earth-blue-marble-8k.jpg",
     "/textures/earth-night-8k.jpg",
@@ -50,11 +63,16 @@ function Globe({ onReady }: { onReady: () => void }) {
   });
 
   useFrame((_, delta) => {
-    earthUniforms.current.uTime.value += delta;
+    // Rotate the entire globe slowly (earth + atmosphere together)
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * EARTH_ROTATION_SPEED;
+    }
+    // Advance cloud drift at a realistic fraction of globe rotation
+    earthUniforms.current.uTime.value += delta * CLOUD_DRIFT_RATE;
   });
 
   return (
-    <group>
+    <group ref={groupRef}>
       <GlobeLoaded onReady={onReady} />
       {/* Earth */}
       <mesh>

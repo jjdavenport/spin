@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, Eye, EyeOff } from "lucide-react";
 
 interface AuthDialogProps {
   open: boolean;
@@ -44,13 +46,29 @@ function GoogleIcon() {
 export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: AuthDialogProps) {
   const [mode, setMode] = useState(defaultMode);
   const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setMode(defaultMode);
   }, [defaultMode]);
 
+  // Reset form state when dialog opens/closes or mode changes
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+    setError(null);
+    setMessage(null);
+    setShowPassword(false);
+  }, [open, mode]);
+
   const handleGoogleAuth = async () => {
     setLoading(true);
+    setError(null);
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -60,12 +78,51 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: Auth
     });
   };
 
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const supabase = createClient();
+
+    if (mode === "sign-up") {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/callback`,
+        },
+      });
+
+      if (signUpError) {
+        setError(signUpError.message);
+      } else {
+        setMessage("Check your email for a confirmation link to complete sign up.");
+      }
+    } else {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+      } else {
+        window.location.href = "/spin";
+      }
+    }
+
+    setEmailLoading(false);
+  };
+
   const isSignIn = mode === "sign-in";
+  const isLoading = loading || emailLoading;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[400px] border-white/[0.08] bg-[oklch(0.16_0_0)] shadow-[0_0_80px_rgba(255,255,255,0.03)]"
+        className="sm:max-w-[420px] border-white/[0.08] bg-[oklch(0.16_0_0)] shadow-[0_0_80px_rgba(255,255,255,0.03)]"
         showCloseButton
       >
         {/* Decorative glow */}
@@ -99,15 +156,12 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: Auth
         </DialogHeader>
 
         <div className="mt-2 space-y-4">
-          {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-
           {/* Google OAuth button */}
           <Button
             onClick={handleGoogleAuth}
-            disabled={loading}
+            disabled={isLoading}
             variant="outline"
-            className="h-12 w-full gap-3 border-white/[0.1] bg-white/[0.04] text-[0.95rem] text-white/90 transition-all hover:border-white/[0.18] hover:bg-white/[0.08] hover:shadow-[0_0_24px_rgba(255,255,255,0.04)]"
+            className="h-11 w-full gap-3 border-white/[0.1] bg-white/[0.04] text-[0.95rem] text-white/90 transition-all hover:border-white/[0.18] hover:bg-white/[0.08] hover:shadow-[0_0_24px_rgba(255,255,255,0.04)]"
           >
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
@@ -116,6 +170,94 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in" }: Auth
             )}
             Continue with Google
           </Button>
+
+          {/* Divider with "or" */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-[oklch(0.16_0_0)] px-3 text-white/30 uppercase tracking-widest">
+                or
+              </span>
+            </div>
+          </div>
+
+          {/* Email form */}
+          <form onSubmit={handleEmailAuth} className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="auth-email" className="text-xs font-medium text-white/50">
+                Email address
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                <Input
+                  id="auth-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="h-11 pl-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="auth-password" className="text-xs font-medium text-white/50">
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="auth-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder={isSignIn ? "Enter your password" : "Create a password (min 6 chars)"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  disabled={isLoading}
+                  className="h-11 pr-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Error message */}
+            {error && (
+              <p className="text-sm text-red-400/90 bg-red-400/[0.08] border border-red-400/[0.12] rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            {/* Success message */}
+            {message && (
+              <p className="text-sm text-emerald-400/90 bg-emerald-400/[0.08] border border-emerald-400/[0.12] rounded-lg px-3 py-2">
+                {message}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-11 w-full gap-2 bg-white text-black font-semibold hover:bg-white/90 transition-all hover:shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+            >
+              {emailLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Mail className="h-4 w-4" />
+              )}
+              {isSignIn ? "Sign in with Email" : "Sign up with Email"}
+            </Button>
+          </form>
 
           {/* Divider */}
           <div className="h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
