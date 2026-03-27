@@ -1,9 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
 export async function updateSession(request: NextRequest) {
   // Public routes that never require auth (shareable URLs, etc.)
-  const publicPaths = ["/", "/login", "/callback", "/destination", "/admin"];
+  const publicPaths = ["/", "/login", "/callback", "/destination"];
   if (publicPaths.some((p) => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + "/"))) {
     return NextResponse.next({ request });
   }
@@ -40,11 +45,21 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users trying to access protected routes
-  const protectedPaths = ["/spin", "/history", "/credits"];
+  const protectedPaths = ["/spin", "/history", "/credits", "/admin"];
   if (!user && protectedPaths.some((p) => request.nextUrl.pathname.startsWith(p))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  // Block non-admin users from accessing /admin
+  if (user && request.nextUrl.pathname.startsWith("/admin")) {
+    const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+    if (!isAdmin) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/spin";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

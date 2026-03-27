@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSiteMode } from "@/lib/site-mode";
+import { AuthDialog } from "@/components/auth/auth-dialog";
 import { Destination, SpinPhase } from "@/lib/types";
 import { useSavedDestinations } from "@/lib/hooks/use-saved-destinations";
 import { useShare } from "@/lib/hooks/use-share";
@@ -78,6 +78,20 @@ export default function LandingPage() {
     }
   }, [destination, share]);
 
+  // Auth dialog state
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authDialogMode, setAuthDialogMode] = useState<"sign-in" | "sign-up">("sign-in");
+
+  const openSignIn = useCallback(() => {
+    setAuthDialogMode("sign-in");
+    setAuthDialogOpen(true);
+  }, []);
+
+  const openSignUp = useCallback(() => {
+    setAuthDialogMode("sign-up");
+    setAuthDialogOpen(true);
+  }, []);
+
   // Don't render until mode is loaded from localStorage
   if (!isLoaded) {
     return (
@@ -127,15 +141,23 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
           <span className="text-lg font-bold tracking-tight">Spin</span>
-          <Link href="/login">
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
               className="text-white/60 hover:text-white hover:bg-white/10"
+              onClick={openSignIn}
             >
               Sign In
             </Button>
-          </Link>
+            <Button
+              size="sm"
+              className="bg-white text-black hover:bg-white/90"
+              onClick={openSignUp}
+            >
+              Sign Up
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -187,6 +209,13 @@ export default function LandingPage() {
           isSaved={isSaved(destination.id)}
         />
       )}
+
+      {/* Auth Dialog */}
+      <AuthDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        defaultMode={authDialogMode}
+      />
     </div>
   );
 }
