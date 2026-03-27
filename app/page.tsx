@@ -94,15 +94,14 @@ export default function LandingPage() {
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-md animate-nav-slide-down" style={{ animationDelay: "0.1s" }}>
           <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
             <span className="text-lg font-bold tracking-tight">Spin</span>
-            <Link href="/login">
-              <Button
+            <Button
                 variant="ghost"
                 size="sm"
                 className="text-white/60 hover:text-white hover:bg-white/10"
+                onClick={() => document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" })}
               >
-                Sign In
+                Join the Waitlist
               </Button>
-            </Link>
           </div>
         </nav>
 

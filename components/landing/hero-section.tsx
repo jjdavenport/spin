@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Globe, MapPin, Coins } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 import { WaitlistForm } from "./waitlist-form";
 
 const HeroGlobe = dynamic(
@@ -11,7 +11,7 @@ const HeroGlobe = dynamic(
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
       {/* 3D Globe background */}
       <div className="absolute inset-0 pointer-events-none">
         <HeroGlobe />
@@ -54,7 +54,6 @@ export function HeroSection() {
           {[
             { icon: Globe, label: "57 Destinations", delay: "1.3s" },
             { icon: MapPin, label: "7 Regions", delay: "1.4s" },
-            { icon: Coins, label: "From $2.99", delay: "1.5s" },
           ].map((stat) => (
             <div
               key={stat.label}
