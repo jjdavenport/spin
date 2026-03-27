@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -12,11 +11,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CREDIT_PACKS } from "@/lib/constants";
 import { addMockCredits } from "@/lib/mock-data";
 
+const CREDIT_PACKS = [
+  { id: "pack_5", credits: 5, label: "5 Credits" },
+  { id: "pack_20", credits: 20, label: "20 Credits" },
+  { id: "pack_50", credits: 50, label: "50 Credits" },
+] as const;
+
 function CreditsContent() {
-  const searchParams = useSearchParams();
   const [credits, setCredits] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -28,54 +31,20 @@ function CreditsContent() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const success = searchParams.get("success");
-    const creditsAdded = searchParams.get("credits");
-    if (success === "true" && creditsAdded) {
-      setSuccessMessage(`${creditsAdded} credits added to your account!`);
-      fetch("/api/spin/balance")
-        .then((r) => r.json())
-        .then((data) => setCredits(data.balance))
-        .catch(() => {});
-    }
-  }, [searchParams]);
-
-  const handlePurchase = async (packId: string) => {
+  const handleAdd = (packId: string) => {
     setLoading(packId);
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ packId }),
-      });
-
-      const data = await res.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        const pack = CREDIT_PACKS.find((p) => p.id === packId);
-        if (pack) {
-          addMockCredits(pack.credits);
-          setCredits((prev) => prev + pack.credits);
-          setSuccessMessage(`${pack.credits} credits added! (Demo mode)`);
-          window.dispatchEvent(
-            new CustomEvent("credits-updated", {
-              detail: credits + pack.credits,
-            })
-          );
-        }
-      }
-    } catch {
-      const pack = CREDIT_PACKS.find((p) => p.id === packId);
-      if (pack) {
-        addMockCredits(pack.credits);
-        setCredits((prev) => prev + pack.credits);
-        setSuccessMessage(`${pack.credits} credits added! (Demo mode)`);
-      }
-    } finally {
-      setLoading(null);
+    const pack = CREDIT_PACKS.find((p) => p.id === packId);
+    if (pack) {
+      addMockCredits(pack.credits);
+      setCredits((prev) => prev + pack.credits);
+      setSuccessMessage(`${pack.credits} credits added!`);
+      window.dispatchEvent(
+        new CustomEvent("credits-updated", {
+          detail: credits + pack.credits,
+        })
+      );
     }
+    setLoading(null);
   };
 
   return (
@@ -83,7 +52,7 @@ function CreditsContent() {
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Credits</h1>
         <p className="text-muted-foreground mt-1">
-          Purchase credits to spin the globe and discover new destinations.
+          Add credits to spin the globe and discover new destinations.
         </p>
       </div>
 
@@ -132,25 +101,17 @@ function CreditsContent() {
               <CardDescription>credits</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-3xl font-bold">{pack.priceLabel}</p>
-              <p className="text-xs text-muted-foreground">
-                ${((pack.price / 100) / pack.credits).toFixed(2)} per spin
-              </p>
               <Button
                 className="w-full"
-                onClick={() => handlePurchase(pack.id)}
+                onClick={() => handleAdd(pack.id)}
                 disabled={loading !== null}
               >
-                {loading === pack.id ? "Processing..." : "Buy Now"}
+                {loading === pack.id ? "Adding..." : `Add ${pack.credits} Credits`}
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      <p className="text-xs text-muted-foreground text-center mt-6">
-        Payments processed securely by Stripe. Credits are non-refundable.
-      </p>
     </div>
   );
 }

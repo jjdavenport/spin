@@ -1,5 +1,11 @@
 import { DESTINATIONS } from "./mock-data";
-import { REGIONS, CREDIT_PACKS } from "./constants";
+import { REGIONS } from "./constants";
+
+const MOCK_PACKS = [
+  { credits: 5, price: 299 },
+  { credits: 20, price: 999 },
+  { credits: 50, price: 1999 },
+];
 
 // Seeded PRNG for deterministic data
 function seededRandom(seed: number) {
@@ -162,7 +168,7 @@ function generateMockData(): AdminStats {
 
   for (let i = 0; i < 43; i++) {
     const user = randomItem(users);
-    const pack = randomItem(CREDIT_PACKS);
+    const pack = randomItem(MOCK_PACKS);
     const day = randomInt(0, 29);
     const date = daysAgo(day);
     const dateKey = date.toISOString().slice(0, 10);

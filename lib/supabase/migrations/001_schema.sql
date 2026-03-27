@@ -7,7 +7,6 @@ create table public.profiles (
   email text,
   display_name text,
   avatar_url text,
-  stripe_customer_id text,
   created_at timestamptz default now()
 );
 
