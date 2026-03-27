@@ -19,10 +19,36 @@ export function WaitlistForm({
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [touched, setTouched] = useState(false);
+
+  function validateEmail(value: string): string {
+    if (!value.trim()) return "Email is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      return "Please enter a valid email address.";
+    return "";
+  }
+
+  function handleBlur() {
+    setTouched(true);
+    const error = validateEmail(email);
+    if (error) {
+      setStatus("error");
+      setErrorMessage(error);
+    } else if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email) return;
+    setTouched(true);
+    const error = validateEmail(email);
+    if (error) {
+      setStatus("error");
+      setErrorMessage(error);
+      return;
+    }
 
     setStatus("submitting");
     setErrorMessage("");
@@ -66,13 +92,30 @@ export function WaitlistForm({
       className={`flex flex-col sm:flex-row gap-3 w-full max-w-md ${className}`}
     >
       <Input
-        type="email"
+        type="text"
+        inputMode="email"
+        autoComplete="email"
         placeholder="you@email.com"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="h-11 flex-1 bg-background/50 backdrop-blur-sm border-border/50"
+        onChange={(e) => {
+          setEmail(e.target.value);
+          if (touched) {
+            const err = validateEmail(e.target.value);
+            if (err) {
+              setStatus("error");
+              setErrorMessage(err);
+            } else {
+              setStatus("idle");
+              setErrorMessage("");
+            }
+          }
+        }}
+        onBlur={handleBlur}
+        className={`h-11 flex-1 bg-background/50 backdrop-blur-sm border-border/50 ${
+          status === "error" && touched ? "border-destructive" : ""
+        }`}
         aria-label="Email address"
+        aria-invalid={status === "error" && touched}
       />
       <Button
         type="submit"
