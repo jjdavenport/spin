@@ -48,7 +48,8 @@ void main() {
   float distanceToCamera = length(cameraPosition - wPos);
 
   // Scroll UVs horizontally to simulate globe rotation
-  vec2 spinUv = vec2(fract(vUv.x - uTime * 0.005), vUv.y);
+  // No fract() — RepeatWrapping on the texture handles the wrap seamlessly
+  vec2 spinUv = vec2(vUv.x - uTime * 0.005, vUv.y);
 
   vec3 result = vec3(0.0);
 

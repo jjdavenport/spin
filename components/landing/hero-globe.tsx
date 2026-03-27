@@ -4,6 +4,7 @@ import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Suspense, useRef, useState, useEffect, useCallback } from "react";
 import {
   BackSide,
+  RepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
@@ -34,6 +35,7 @@ function Globe({ onReady }: { onReady: () => void }) {
   ]);
 
   dayTex.colorSpace = nightTex.colorSpace = cloudTex.colorSpace = SRGBColorSpace;
+  dayTex.wrapS = nightTex.wrapS = cloudTex.wrapS = RepeatWrapping;
 
   const earthUniforms = useRef({
     dayMap: { value: dayTex },
