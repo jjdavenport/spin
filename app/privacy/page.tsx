@@ -1,4 +1,5 @@
 import { Footer } from "@/components/landing/footer";
+import { LegalPageLayout, RevealSection } from "@/components/legal-page-layout";
 
 export const metadata = {
   title: "Privacy Policy – Spin",
@@ -8,16 +9,8 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-          Privacy Policy
-        </h1>
-        <p className="text-sm text-muted-foreground mb-10">
-          Last updated: [Date]
-        </p>
-
-        <div className="space-y-10 text-muted-foreground leading-relaxed">
-          {/* 1 */}
+      <LegalPageLayout title="Privacy Policy" lastUpdated="Last updated: [Date]">
+        <RevealSection index={0}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               1. Who We Are
@@ -35,8 +28,9 @@ export default function PrivacyPage() {
               [your email address].
             </p>
           </section>
+        </RevealSection>
 
-          {/* 2 */}
+        <RevealSection index={1}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               2. What Information We Collect
@@ -98,8 +92,9 @@ export default function PrivacyPage() {
               </li>
             </ul>
           </section>
+        </RevealSection>
 
-          {/* 3 */}
+        <RevealSection index={2}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               3. How We Use Your Information
@@ -133,8 +128,9 @@ export default function PrivacyPage() {
               We will never sell your personal information to third parties.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 4 */}
+        <RevealSection index={3}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               4. Affiliate Links and Third-Party Booking Partners
@@ -170,8 +166,9 @@ export default function PrivacyPage() {
               details with these partners.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 5 */}
+        <RevealSection index={4}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               5. Legal Basis for Processing (GDPR)
@@ -205,8 +202,9 @@ export default function PrivacyPage() {
               using the unsubscribe link in any email.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 6 */}
+        <RevealSection index={5}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               6. Cookies
@@ -249,8 +247,9 @@ export default function PrivacyPage() {
               certain cookies may affect your experience on the site.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 7 */}
+        <RevealSection index={6}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               7. How We Store and Protect Your Data
@@ -281,8 +280,9 @@ export default function PrivacyPage() {
               </li>
             </ul>
           </section>
+        </RevealSection>
 
-          {/* 8 */}
+        <RevealSection index={7}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               8. Your Rights
@@ -340,8 +340,9 @@ export default function PrivacyPage() {
               .
             </p>
           </section>
+        </RevealSection>
 
-          {/* 9 */}
+        <RevealSection index={8}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               9. Children&rsquo;s Privacy
@@ -354,8 +355,9 @@ export default function PrivacyPage() {
               information, please contact us at [your email address].
             </p>
           </section>
+        </RevealSection>
 
-          {/* 10 */}
+        <RevealSection index={9}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               10. International Data Transfers
@@ -368,8 +370,9 @@ export default function PrivacyPage() {
               deemed adequate by the UK Secretary of State.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 11 */}
+        <RevealSection index={10}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               11. Changes to This Policy
@@ -381,8 +384,9 @@ export default function PrivacyPage() {
               or with a prominent notice on our site.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 12 */}
+        <RevealSection index={11}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               12. Contact Us
@@ -397,8 +401,8 @@ export default function PrivacyPage() {
               <p>Address: [your business address, if applicable]</p>
             </address>
           </section>
-        </div>
-      </main>
+        </RevealSection>
+      </LegalPageLayout>
 
       <Footer />
     </>

@@ -1,4 +1,5 @@
 import { Footer } from "@/components/landing/footer";
+import { LegalPageLayout, RevealSection } from "@/components/legal-page-layout";
 
 export const metadata = {
   title: "Terms of Service – Spin",
@@ -8,16 +9,8 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-          Terms of Service
-        </h1>
-        <p className="text-sm text-muted-foreground mb-10">
-          Last updated: [Date]
-        </p>
-
-        <div className="space-y-10 text-muted-foreground leading-relaxed">
-          {/* 1 */}
+      <LegalPageLayout title="Terms of Service" lastUpdated="Last updated: [Date]">
+        <RevealSection index={0}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               1. Introduction
@@ -34,8 +27,9 @@ export default function TermsPage() {
               Terms. If you do not agree, please do not use the Service.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 2 */}
+        <RevealSection index={1}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               2. What the Service Does
@@ -53,8 +47,9 @@ export default function TermsPage() {
               any resulting contract is between you and that third party.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 3 */}
+        <RevealSection index={2}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               3. Eligibility
@@ -69,8 +64,9 @@ export default function TermsPage() {
               occurs under your account.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 4 */}
+        <RevealSection index={3}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               4. Accounts
@@ -87,8 +83,9 @@ export default function TermsPage() {
               these Terms or that appear to be fraudulent.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 5 */}
+        <RevealSection index={4}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               5. Free and Premium Services
@@ -124,8 +121,9 @@ export default function TermsPage() {
               changes before their next renewal date.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 6 */}
+        <RevealSection index={5}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               6. Affiliate Links and Third-Party Services
@@ -171,8 +169,9 @@ export default function TermsPage() {
               decisions.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 7 */}
+        <RevealSection index={6}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               7. Destination Recommendations
@@ -210,8 +209,9 @@ export default function TermsPage() {
               from travel to a destination suggested by the Service.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 8 */}
+        <RevealSection index={7}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               8. Intellectual Property
@@ -233,8 +233,9 @@ export default function TermsPage() {
               respective rights holders.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 9 */}
+        <RevealSection index={8}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               9. User Conduct
@@ -271,8 +272,9 @@ export default function TermsPage() {
               Service if you breach any of these terms.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 10 */}
+        <RevealSection index={9}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               10. Disclaimer of Warranties
@@ -305,8 +307,9 @@ export default function TermsPage() {
               or limited under applicable UK law.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 11 */}
+        <RevealSection index={10}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               11. Limitation of Liability
@@ -329,8 +332,9 @@ export default function TermsPage() {
               theory.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 12 */}
+        <RevealSection index={11}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               12. Indemnification
@@ -354,8 +358,9 @@ export default function TermsPage() {
               </li>
             </ul>
           </section>
+        </RevealSection>
 
-          {/* 13 */}
+        <RevealSection index={12}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               13. Changes to the Service
@@ -372,8 +377,9 @@ export default function TermsPage() {
               modification, suspension, or discontinuation of the Service.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 14 */}
+        <RevealSection index={13}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               14. Changes to These Terms
@@ -390,8 +396,9 @@ export default function TermsPage() {
               changes, you should stop using the Service.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 15 */}
+        <RevealSection index={14}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               15. Governing Law and Disputes
@@ -411,8 +418,9 @@ export default function TermsPage() {
               applicable UK consumer protection legislation.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 16 */}
+        <RevealSection index={15}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               16. Severability
@@ -423,8 +431,9 @@ export default function TermsPage() {
               remaining provisions shall continue in full force and effect.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 17 */}
+        <RevealSection index={16}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               17. Entire Agreement
@@ -441,8 +450,9 @@ export default function TermsPage() {
               agreement between you and us regarding your use of the Service.
             </p>
           </section>
+        </RevealSection>
 
-          {/* 18 */}
+        <RevealSection index={17}>
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
               18. Contact Us
@@ -456,8 +466,8 @@ export default function TermsPage() {
               <p>Address: [your business address, if applicable]</p>
             </address>
           </section>
-        </div>
-      </main>
+        </RevealSection>
+      </LegalPageLayout>
 
       <Footer />
     </>
