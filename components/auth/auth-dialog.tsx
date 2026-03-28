@@ -53,6 +53,24 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+
+  function validateEmail(value: string): string {
+    if (!value.trim()) return "Email is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      return "Please enter a valid email address.";
+    return "";
+  }
+
+  function validatePassword(value: string, currentMode: string): string {
+    if (!value) return "Password is required.";
+    if (currentMode === "sign-up" && value.length < 6)
+      return "Password must be at least 6 characters.";
+    return "";
+  }
 
   useEffect(() => {
     setMode(defaultMode);
@@ -65,6 +83,10 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
     setError(null);
     setMessage(null);
     setShowPassword(false);
+    setEmailError("");
+    setPasswordError("");
+    setEmailTouched(false);
+    setPasswordTouched(false);
   }, [open, mode]);
 
   const handleGoogleAuth = async () => {
@@ -81,6 +103,15 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEmailTouched(true);
+    setPasswordTouched(true);
+
+    const eErr = validateEmail(email);
+    const pErr = validatePassword(password, mode);
+    setEmailError(eErr);
+    setPasswordError(pErr);
+    if (eErr || pErr) return;
+
     setEmailLoading(true);
     setError(null);
     setMessage(null);
@@ -187,39 +218,73 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
           {/* Email form */}
           <form onSubmit={handleEmailAuth} className="space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="auth-email" className="text-xs font-medium text-white/50">
-                Email address
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="auth-email" className="text-xs font-medium text-white/50">
+                  Email address
+                </Label>
+                {emailError && emailTouched && (
+                  <p className="text-xs text-red-400/90">{emailError}</p>
+                )}
+              </div>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                 <Input
                   id="auth-email"
-                  type="email"
+                  type="text"
+                  inputMode="email"
+                  autoComplete="email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailTouched) {
+                      const err = validateEmail(e.target.value);
+                      setEmailError(err);
+                    }
+                  }}
+                  onBlur={() => {
+                    setEmailTouched(true);
+                    setEmailError(validateEmail(email));
+                  }}
                   disabled={isLoading}
-                  className="h-11 pl-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10"
+                  aria-invalid={!!emailError && emailTouched}
+                  className={`h-11 pl-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10 ${
+                    emailError && emailTouched ? "border-red-400/50" : ""
+                  }`}
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="auth-password" className="text-xs font-medium text-white/50">
-                Password
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="auth-password" className="text-xs font-medium text-white/50">
+                  Password
+                </Label>
+                {passwordError && passwordTouched && (
+                  <p className="text-xs text-red-400/90">{passwordError}</p>
+                )}
+              </div>
               <div className="relative">
                 <Input
                   id="auth-password"
                   type={showPassword ? "text" : "password"}
                   placeholder={isSignIn ? "Enter your password" : "Create a password (min 6 chars)"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordTouched) {
+                      setPasswordError(validatePassword(e.target.value, mode));
+                    }
+                  }}
+                  onBlur={() => {
+                    setPasswordTouched(true);
+                    setPasswordError(validatePassword(password, mode));
+                  }}
                   disabled={isLoading}
-                  className="h-11 pr-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10"
+                  aria-invalid={!!passwordError && passwordTouched}
+                  className={`h-11 pr-10 border-white/[0.1] bg-white/[0.04] text-white placeholder:text-white/25 focus-visible:border-white/[0.2] focus-visible:ring-white/10 ${
+                    passwordError && passwordTouched ? "border-red-400/50" : ""
+                  }`}
                 />
                 <button
                   type="button"

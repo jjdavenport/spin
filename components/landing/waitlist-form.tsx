@@ -89,9 +89,19 @@ export function WaitlistForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex flex-col sm:flex-row gap-3 w-full max-w-md ${className}`}
+      className={`flex flex-col gap-1.5 w-full max-w-md ${className}`}
     >
+      <div className="flex items-center justify-between">
+        <label htmlFor="waitlist-email" className="text-xs font-medium text-muted-foreground">
+          Email address
+        </label>
+        {status === "error" && touched && (
+          <p className="text-xs text-destructive">{errorMessage}</p>
+        )}
+      </div>
+      <div className="flex flex-col sm:flex-row gap-3">
       <Input
+        id="waitlist-email"
         type="text"
         inputMode="email"
         autoComplete="email"
@@ -114,7 +124,6 @@ export function WaitlistForm({
         className={`h-11 flex-1 bg-background/50 backdrop-blur-sm border-border/50 ${
           status === "error" && touched ? "border-destructive" : ""
         }`}
-        aria-label="Email address"
         aria-invalid={status === "error" && touched}
       />
       <Button
@@ -125,11 +134,7 @@ export function WaitlistForm({
       >
         {status === "submitting" ? "Joining..." : buttonText}
       </Button>
-      {status === "error" && (
-        <p className="text-sm text-destructive sm:absolute sm:top-full sm:mt-1">
-          {errorMessage}
-        </p>
-      )}
+      </div>
     </form>
   );
 }
