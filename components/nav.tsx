@@ -10,7 +10,7 @@ interface NavProps {
 }
 
 const links = [
-  { href: "/spin", label: "Spin" },
+  { href: "/", label: "Spin" },
   { href: "/history", label: "History" },
   { href: "/credits", label: "Credits" },
   { href: "/admin", label: "Admin" },
@@ -24,7 +24,7 @@ export default function Nav({ credits }: NavProps) {
       <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
         <div className="flex items-center gap-3 sm:gap-6">
           <Link
-            href="/spin"
+            href="/"
             className="text-lg font-bold tracking-tight"
           >
             Spin

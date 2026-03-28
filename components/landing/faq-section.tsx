@@ -10,29 +10,34 @@ import {
 
 const faqs = [
   {
-    question: "Is it free?",
+    question: "Is it really free?",
     answer:
-      "You get 3 free spins when you sign up. Additional spins start at just $2.99 for a 5-pack. We also earn from our booking partners, so the spin experience stays affordable.",
+      "Completely free. We earn a small commission from our booking partners when you book a trip — at no extra cost to you. No hidden fees, no premium tier, no catch.",
   },
   {
     question: "How random is it?",
     answer:
-      "Completely random — across all 57 destinations worldwide, or filtered by your preferred region. Every spin is a fresh roll of the dice.",
+      "Genuinely random. Every spin picks from our full database of destinations with equal probability. No weighting, no algorithms trying to push you somewhere specific.",
   },
   {
-    question: "Can I re-spin?",
+    question: "Can I spin again?",
     answer:
-      "Absolutely. Each spin costs one credit, and you can spin as many times as you like. Save the destinations you love and skip the rest.",
+      "As many times as you like. There are no limits on spins. Keep going until the globe picks somewhere that excites you.",
   },
   {
     question: "Do I have to book?",
     answer:
-      "No obligation at all. Spin for fun, explore destination details, save your favorites, and book only when you're ready.",
+      "Not at all. Use it for inspiration, daydreaming, or planning. There's zero obligation to book anything. But when you're ready, the links are right there.",
   },
   {
-    question: "When does it launch?",
+    question: "How do you make money?",
     answer:
-      "We're in early access right now. Join the waitlist to be first in line — we'll notify you the moment it's your turn.",
+      "When you click through to a booking partner (like Booking.com or Skyscanner) and make a purchase, we receive a small affiliate commission. You pay the same price as going directly — it costs you nothing extra.",
+  },
+  {
+    question: "Do I need an account?",
+    answer:
+      "Nope. You can spin and browse without signing up. If you want to save destinations for later, creating a free account unlocks that — but it's entirely optional.",
   },
 ];
 

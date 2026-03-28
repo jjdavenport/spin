@@ -45,7 +45,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users trying to access protected routes
-  const protectedPaths = ["/spin", "/history", "/credits", "/admin"];
+  const protectedPaths = ["/history", "/credits", "/admin"];
   if (!user && protectedPaths.some((p) => request.nextUrl.pathname.startsWith(p))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
@@ -57,7 +57,7 @@ export async function updateSession(request: NextRequest) {
     const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
     if (!isAdmin) {
       const url = request.nextUrl.clone();
-      url.pathname = "/spin";
+      url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }

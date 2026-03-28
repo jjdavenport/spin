@@ -14,7 +14,7 @@ export function AdminHeader() {
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-4">
         <div className="flex items-center gap-3">
-          <Link href="/spin" className="text-lg font-bold tracking-tight">
+          <Link href="/" className="text-lg font-bold tracking-tight">
             Spin
           </Link>
           <Separator orientation="vertical" className="h-5" />
@@ -57,7 +57,7 @@ export function AdminHeader() {
           <Separator orientation="vertical" className="h-5" />
 
           <Link
-            href="/spin"
+            href="/"
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             Back to App

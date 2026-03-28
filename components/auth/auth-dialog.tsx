@@ -141,7 +141,7 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
       if (signInError) {
         setError(signInError.message);
       } else {
-        window.location.href = "/spin";
+        window.location.href = "/";
       }
     }
 
