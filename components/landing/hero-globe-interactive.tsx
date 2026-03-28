@@ -26,9 +26,12 @@ import {
   atmosphereVertexShader,
 } from "./earth/atmosphere-shaders";
 
-// Light from camera direction with slight rightward + upward bias.
-// Ensures the camera-facing side of the globe is always in daylight.
-const LIGHT_DIR = new Vector3(0.4, 0.3, 1).normalize();
+// Light from the right, tilted 13° upward — matches the waitlist globe.
+// Creates a dramatic day/night terminator across the visible face.
+const LIGHT_DIR = new Vector3(1, 0, 0).applyAxisAngle(
+  new Vector3(0, 0, 1),
+  Math.PI * (13 / 180)
+);
 
 // Idle rotation speed (rad/s)
 // Matches the original UV scroll rate: uTime * 0.005 ≈ 0.005 * 2π rad/s
