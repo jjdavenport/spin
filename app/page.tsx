@@ -25,7 +25,6 @@ import { DestinationReveal } from "@/components/landing/destination-reveal";
 import { TripBuilder } from "@/components/landing/trip-builder";
 import { HowItWorksCompact } from "@/components/landing/how-it-works-compact";
 import { RecentSpinsGallery } from "@/components/landing/recent-spins-gallery";
-import { PremiumTeaser } from "@/components/landing/premium-teaser";
 import { FooterExpanded } from "@/components/landing/footer-expanded";
 import { StickyActionBar } from "@/components/landing/sticky-action-bar";
 
@@ -201,8 +200,8 @@ export default function LandingPage() {
         {/* Social Proof */}
         <RecentSpinsGallery />
 
-        {/* Premium Teaser */}
-        <PremiumTeaser />
+        {/* FAQ */}
+        <FaqSection />
       </main>
 
       {/* Footer */}
