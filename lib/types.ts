@@ -37,6 +37,16 @@ export interface SpinHistoryEntry {
 
 export type SpinPhase = "idle" | "spinning" | "revealing" | "revealed";
 
+export type ClimateType = "tropical" | "arid" | "temperate" | "cold" | "mediterranean";
+
+export interface SpinFilters {
+  regions: string[];
+  climates: ClimateType[];
+  homeAirport: string | null;
+  visaFreeOnly: boolean;
+  directFlightsOnly: boolean;
+}
+
 export interface ItineraryDay {
   day: number;
   title: string;

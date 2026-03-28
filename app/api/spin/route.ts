@@ -5,7 +5,7 @@ import { sendSpinResultEmail } from "@/lib/send-email";
 
 export async function POST(request: Request) {
   try {
-    const { region, email } = await request.json();
+    const { region, email, destinationIds } = await request.json();
 
     const supabase = await createClient();
     const {
@@ -46,7 +46,13 @@ export async function POST(request: Request) {
 
     // Pick random destination
     let query = supabase.from("destinations").select("*");
-    if (region && region !== "All Regions") {
+    if (
+      Array.isArray(destinationIds) &&
+      destinationIds.length > 0 &&
+      destinationIds.length <= 100
+    ) {
+      query = query.in("id", destinationIds);
+    } else if (region && region !== "All Regions") {
       query = query.eq("region", region);
     }
     const { data: destinations } = await query;

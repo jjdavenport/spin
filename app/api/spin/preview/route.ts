@@ -6,6 +6,7 @@ const MAX_FREE_SPINS = 50;
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const region = body.region || null;
+  const destinationIds: string[] | undefined = body.destinationIds;
 
   // Cookie-based rate limiting for free spins
   const countCookie = req.cookies.get("spin-preview-count");
@@ -24,7 +25,13 @@ export async function POST(req: NextRequest) {
   const supabase = await createServiceClient();
 
   let query = supabase.from("destinations").select("*");
-  if (region && region !== "All Regions") {
+  if (
+    Array.isArray(destinationIds) &&
+    destinationIds.length > 0 &&
+    destinationIds.length <= 100
+  ) {
+    query = query.in("id", destinationIds);
+  } else if (region && region !== "All Regions") {
     query = query.eq("region", region);
   }
 

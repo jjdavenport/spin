@@ -1,14 +1,20 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Globe as GlobeIcon, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import RegionFilter from "@/components/region-filter";
-import { Destination, SpinPhase } from "@/lib/types";
+import { FiltersButton } from "@/components/filters-button";
+import { FilterPanel } from "@/components/filter-panel";
+import { Destination, SpinPhase, SpinFilters } from "@/lib/types";
 import { DESTINATION_DETAILS } from "@/lib/destination-details";
 import { getUnsplashUrl } from "@/components/destination-hero-image";
 import { useSoundEffects } from "@/lib/hooks/use-sound-effects";
+import {
+  filterDestinations,
+  getDefaultFilters,
+  getActiveFilterCount,
+} from "@/lib/filter-destinations";
 import { toast } from "sonner";
 import { ReturningUserBanner } from "./returning-user-banner";
 import type { HeroGlobeHandle } from "./hero-globe-interactive";
@@ -34,9 +40,9 @@ export function HeroSectionLive({
   phase,
   setPhase,
 }: HeroSectionLiveProps) {
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(
-    "All Regions"
-  );
+  const [filters, setFilters] = useState<SpinFilters>(getDefaultFilters);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
   const globeRef = useRef<HeroGlobeHandle>(null);
   const hasAnimated = useRef(false);
 
@@ -44,6 +50,26 @@ export function HeroSectionLive({
   useEffect(() => {
     hasAnimated.current = true;
   }, []);
+
+  // Fetch all destinations for client-side filtering
+  useEffect(() => {
+    fetch("/api/destinations")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.destinations) setDestinations(data.destinations);
+      })
+      .catch(() => {
+        // Silent fail — spin still works without client-side filtering
+      });
+  }, []);
+
+  const filteredIds = useMemo(
+    () => filterDestinations(destinations, DESTINATION_DETAILS, filters),
+    [destinations, filters]
+  );
+
+  const matchCount = destinations.length > 0 ? filteredIds.length : 57;
+  const activeFilterCount = getActiveFilterCount(filters);
 
   const { playWhoosh, playImpact, playChime } = useSoundEffects();
 
@@ -55,14 +81,24 @@ export function HeroSectionLive({
   }, [phase]);
 
   const handleSpin = async () => {
+    if (matchCount === 0) {
+      toast.error("No destinations match your filters. Try adjusting them.");
+      return;
+    }
+
     setPhase("spinning");
     playWhoosh();
 
     try {
+      const body: Record<string, unknown> = {};
+      if (filteredIds.length > 0 && filteredIds.length < 57) {
+        body.destinationIds = filteredIds;
+      }
+
       const res = await fetch("/api/spin/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ region: selectedRegion }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -160,14 +196,14 @@ export function HeroSectionLive({
             adventure. Spin, discover, and book — all in one place.
           </p>
 
-          {/* Region Filter */}
+          {/* Filters Button */}
           <div
             className={`pointer-events-auto mt-6 flex justify-center ${hasAnimated.current ? "" : "opacity-0 animate-reveal-slide-up"}`}
             style={hasAnimated.current ? undefined : { animationDelay: "1.1s" }}
           >
-            <RegionFilter
-              value={selectedRegion}
-              onChange={setSelectedRegion}
+            <FiltersButton
+              onClick={() => setFiltersOpen(true)}
+              activeCount={activeFilterCount}
               disabled={isActive}
             />
           </div>
@@ -179,7 +215,7 @@ export function HeroSectionLive({
           >
             <Button
               onClick={handleSpin}
-              disabled={isActive}
+              disabled={isActive || matchCount === 0}
               size="lg"
               className="h-14 px-10 text-lg font-bold rounded-full transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 bg-white text-black hover:bg-white/90 shadow-[0_0_40px_rgba(255,255,255,0.15)]"
             >
@@ -219,7 +255,7 @@ export function HeroSectionLive({
               style={hasAnimated.current ? undefined : { animationDelay: "1.5s" }}
             >
               <GlobeIcon className="h-4 w-4" />
-              57 Destinations
+              {activeFilterCount > 0 ? `${matchCount} Matches` : "57 Destinations"}
             </div>
             <div
               className={`flex items-center gap-2 ${hasAnimated.current ? "" : "opacity-0 animate-hero-text-rise"}`}
@@ -240,6 +276,15 @@ export function HeroSectionLive({
           </div>
         </div>
       )}
+
+      {/* Filter Panel Drawer */}
+      <FilterPanel
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        filters={filters}
+        onFiltersChange={setFilters}
+        matchCount={matchCount}
+      />
     </section>
   );
 }
