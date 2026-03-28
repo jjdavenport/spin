@@ -159,7 +159,7 @@ export function HeroSectionLive({
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center pointer-events-none px-4">
         {/* Returning user banner */}
         {phase === "idle" && (
-          <div className="pointer-events-auto mb-2">
+          <div className="pointer-events-auto">
             <ReturningUserBanner />
           </div>
         )}

@@ -7,12 +7,13 @@ import { useReturningUser } from "@/lib/hooks/use-returning-user";
 export function ReturningUserBanner() {
   const { isReturning, lastDestination, savedCount, dismissed, dismiss } =
     useReturningUser();
-  const [phase, setPhase] = useState<"visible" | "fading" | "collapsing">(
+  const [phase, setPhase] = useState<"visible" | "fading" | "collapsing" | "done">(
     "visible"
   );
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  if (!isReturning || !lastDestination || dismissed) return null;
+  if (!isReturning || !lastDestination) return null;
+  if (dismissed || phase === "done") return <div className="h-0 w-0" />;
 
   const handleDismiss = () => {
     // Phase 1: fade out (opacity only, no layout shift)
@@ -37,6 +38,7 @@ export function ReturningUserBanner() {
 
   const handleCollapseEnd = () => {
     if (phase === "collapsing") {
+      setPhase("done");
       dismiss();
     }
   };
