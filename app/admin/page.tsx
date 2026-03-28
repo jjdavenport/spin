@@ -1,4 +1,7 @@
 import { getAdminStats } from "@/lib/admin-data";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { AdminLogin } from "@/components/admin/admin-login";
 
 export const dynamic = "force-dynamic";
 import { StatCard } from "@/components/admin/stat-card";
@@ -7,6 +10,11 @@ import { RegionBars } from "@/components/admin/region-bars";
 import { RecentSpinsTable, RecentSignupsTable } from "@/components/admin/recent-table";
 import { TopDestinations } from "@/components/admin/top-destinations";
 import { AdminHeader } from "@/components/admin/admin-header";
+
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
 
 function UsersIcon() {
   return (
@@ -61,6 +69,18 @@ function MailIcon() {
 }
 
 export default async function AdminPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return <AdminLogin />;
+  }
+
+  const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+  if (!isAdmin) {
+    redirect("/");
+  }
+
   const stats = await getAdminStats();
 
   return (

@@ -19,6 +19,7 @@ interface AuthDialogProps {
   onOpenChange: (open: boolean) => void;
   defaultMode?: "sign-in" | "sign-up";
   onModeChange?: (mode: "sign-in" | "sign-up") => void;
+  redirectTo?: string;
 }
 
 function GoogleIcon() {
@@ -44,7 +45,7 @@ function GoogleIcon() {
   );
 }
 
-export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onModeChange }: AuthDialogProps) {
+export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onModeChange, redirectTo = "/" }: AuthDialogProps) {
   const [mode, setMode] = useState(defaultMode);
   const [loading, setLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
@@ -141,7 +142,7 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
       if (signInError) {
         setError(signInError.message);
       } else {
-        window.location.href = "/";
+        window.location.href = redirectTo;
       }
     }
 

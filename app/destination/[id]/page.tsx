@@ -64,7 +64,7 @@ export default function DestinationPage({
           <h1 className="text-2xl font-bold">Destination not found</h1>
           <Button
             variant="ghost"
-            onClick={() => router.push("/spin")}
+            onClick={() => router.push("/")}
             className="mt-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -136,7 +136,7 @@ export default function DestinationPage({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/spin")}
+            onClick={() => router.push("/")}
             className="text-white hover:text-white hover:bg-white/20 rounded-full"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -464,7 +464,7 @@ export default function DestinationPage({
       <div className="fixed bottom-0 left-0 right-0 z-30 sm:hidden bg-background/95 backdrop-blur-md border-t p-3 flex items-center gap-3">
         <Button
           className="flex-1 rounded-full"
-          onClick={() => router.push("/spin")}
+          onClick={() => router.push("/")}
         >
           <RotateCcw className="mr-2 h-4 w-4" />
           Spin Again

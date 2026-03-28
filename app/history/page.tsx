@@ -38,7 +38,7 @@ export default function HistoryPage() {
               No spins yet. Go spin the globe!
             </p>
             <a
-              href="/spin"
+              href="/"
               className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-4 mt-2 inline-block"
             >
               Start spinning
