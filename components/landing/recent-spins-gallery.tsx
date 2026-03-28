@@ -3,6 +3,7 @@
 import { RECENT_SPINS } from "@/lib/mock-social-data";
 import { getUnsplashUrl } from "@/components/destination-hero-image";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import { CountryFlag } from "@/components/country-flag";
 
 export function RecentSpinsGallery() {
   const { ref, isVisible } = useScrollReveal({ threshold: 0.1 });
@@ -58,7 +59,7 @@ export function RecentSpinsGallery() {
                   <p className="text-white font-bold text-sm">
                     {spin.destinationName}
                   </p>
-                  <p className="text-white/60 text-xs">{spin.country}</p>
+                  <p className="text-white/60 text-xs flex items-center gap-1"><CountryFlag country={spin.country} size={14} /> {spin.country}</p>
                 </div>
               </div>
 

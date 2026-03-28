@@ -1,6 +1,7 @@
 "use client";
 
 import { Destination } from "@/lib/types";
+import { CountryFlag } from "@/components/country-flag";
 import {
   Card,
   CardContent,
@@ -35,8 +36,8 @@ export default function DestinationCard({
           </span>
         </div>
         <CardTitle className="text-2xl mt-2">{destination.name}</CardTitle>
-        <CardDescription className="text-base">
-          {destination.country}
+        <CardDescription className="text-base flex items-center gap-1.5">
+          <CountryFlag country={destination.country} size={16} /> {destination.country}
         </CardDescription>
       </CardHeader>
       <CardContent>

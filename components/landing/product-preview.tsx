@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plane, Hotel, Compass, Star } from "lucide-react";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import { CountryFlag } from "@/components/country-flag";
 
 const destination = {
   name: "Bali",
@@ -78,8 +79,8 @@ export function ProductPreview() {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-2xl font-bold">{destination.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {destination.country}
+                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <CountryFlag country={destination.country} size={16} /> {destination.country}
                   </p>
                 </div>
                 <span className="text-sm font-mono text-muted-foreground">

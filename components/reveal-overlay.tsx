@@ -6,6 +6,7 @@ import DestinationHeroImage from "@/components/destination-hero-image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Share2, ArrowRight, RotateCcw } from "lucide-react";
+import { CountryFlag } from "@/components/country-flag";
 
 interface RevealOverlayProps {
   destination: Destination;
@@ -73,8 +74,8 @@ export default function RevealOverlay({
           className="flex items-center gap-3 mt-3 animate-reveal-text-up"
           style={{ animationDelay: "0.7s" }}
         >
-          <span className="text-xl sm:text-2xl text-white/80">
-            {destination.country}
+          <span className="text-xl sm:text-2xl text-white/80 inline-flex items-center gap-2">
+            <CountryFlag country={destination.country} size={24} /> {destination.country}
           </span>
           <Badge variant="secondary" className="text-xs">
             {destination.region}

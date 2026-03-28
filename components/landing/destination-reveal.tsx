@@ -17,57 +17,7 @@ import {
   DollarSign,
   FileText,
 } from "lucide-react";
-
-// Country to flag emoji (simple mapping via country code logic)
-const COUNTRY_FLAGS: Record<string, string> = {
-  France: "\u{1F1EB}\u{1F1F7}",
-  Italy: "\u{1F1EE}\u{1F1F9}",
-  Spain: "\u{1F1EA}\u{1F1F8}",
-  Netherlands: "\u{1F1F3}\u{1F1F1}",
-  Greece: "\u{1F1EC}\u{1F1F7}",
-  "Czech Republic": "\u{1F1E8}\u{1F1FF}",
-  Iceland: "\u{1F1EE}\u{1F1F8}",
-  Croatia: "\u{1F1ED}\u{1F1F7}",
-  Scotland: "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
-  Austria: "\u{1F1E6}\u{1F1F9}",
-  Portugal: "\u{1F1F5}\u{1F1F9}",
-  Denmark: "\u{1F1E9}\u{1F1F0}",
-  Japan: "\u{1F1EF}\u{1F1F5}",
-  Indonesia: "\u{1F1EE}\u{1F1E9}",
-  Thailand: "\u{1F1F9}\u{1F1ED}",
-  "South Korea": "\u{1F1F0}\u{1F1F7}",
-  Vietnam: "\u{1F1FB}\u{1F1F3}",
-  Singapore: "\u{1F1F8}\u{1F1EC}",
-  Nepal: "\u{1F1F3}\u{1F1F5}",
-  Laos: "\u{1F1F1}\u{1F1E6}",
-  India: "\u{1F1EE}\u{1F1F3}",
-  "South Africa": "\u{1F1FF}\u{1F1E6}",
-  Morocco: "\u{1F1F2}\u{1F1E6}",
-  Tanzania: "\u{1F1F9}\u{1F1FF}",
-  Zimbabwe: "\u{1F1FF}\u{1F1FC}",
-  Egypt: "\u{1F1EA}\u{1F1EC}",
-  Madagascar: "\u{1F1F2}\u{1F1EC}",
-  Kenya: "\u{1F1F0}\u{1F1EA}",
-  "United States": "\u{1F1FA}\u{1F1F8}",
-  Canada: "\u{1F1E8}\u{1F1E6}",
-  Mexico: "\u{1F1F2}\u{1F1FD}",
-  Cuba: "\u{1F1E8}\u{1F1FA}",
-  Brazil: "\u{1F1E7}\u{1F1F7}",
-  Peru: "\u{1F1F5}\u{1F1EA}",
-  Argentina: "\u{1F1E6}\u{1F1F7}",
-  Ecuador: "\u{1F1EA}\u{1F1E8}",
-  Colombia: "\u{1F1E8}\u{1F1F4}",
-  Bolivia: "\u{1F1E7}\u{1F1F4}",
-  Australia: "\u{1F1E6}\u{1F1FA}",
-  "New Zealand": "\u{1F1F3}\u{1F1FF}",
-  "French Polynesia": "\u{1F1F5}\u{1F1EB}",
-  Fiji: "\u{1F1EB}\u{1F1EF}",
-  UAE: "\u{1F1E6}\u{1F1EA}",
-  Jordan: "\u{1F1EF}\u{1F1F4}",
-  Turkey: "\u{1F1F9}\u{1F1F7}",
-  Israel: "\u{1F1EE}\u{1F1F1}",
-  Oman: "\u{1F1F4}\u{1F1F2}",
-};
+import { CountryFlag } from "@/components/country-flag";
 
 interface DestinationRevealProps {
   destination: Destination;
@@ -132,7 +82,7 @@ export function DestinationReveal({
     }, 300);
   }, []);
 
-  const flag = COUNTRY_FLAGS[destination.country] || "";
+  const flag = destination.country;
 
   return (
     <section
@@ -173,7 +123,7 @@ export function DestinationReveal({
           className="flex items-center gap-3 mt-4 animate-reveal-text-up"
           style={{ animationDelay: "0.6s" }}
         >
-          {flag && <span className="text-3xl">{flag}</span>}
+          <CountryFlag country={flag} size={28} />
           <span className="text-xl sm:text-2xl text-white/80 font-light">
             {destination.country}
           </span>
