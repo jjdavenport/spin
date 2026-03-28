@@ -9,22 +9,33 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const token_hash = searchParams.get("token_hash");
+  const type = searchParams.get("type") as "signup" | "email" | "magiclink" | undefined;
   const next = searchParams.get("next") ?? "/";
 
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  const supabase = await createClient();
+  let error = null;
 
-      if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-        return NextResponse.redirect(`${origin}/admin`);
-      }
+  if (token_hash && type) {
+    // Token hash flow (from custom Resend verification email)
+    ({ error } = await supabase.auth.verifyOtp({ token_hash, type }));
+  } else if (code) {
+    // PKCE flow (from OAuth or default Supabase emails)
+    ({ error } = await supabase.auth.exchangeCodeForSession(code));
+  } else {
+    return NextResponse.redirect(`${origin}/admin?error=auth`);
+  }
 
-      return NextResponse.redirect(`${origin}${next}`);
+  if (!error) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      return NextResponse.redirect(`${origin}/admin`);
     }
+
+    return NextResponse.redirect(`${origin}${next}`);
   }
 
   return NextResponse.redirect(`${origin}/admin?error=auth`);

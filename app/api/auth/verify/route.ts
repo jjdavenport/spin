@@ -4,10 +4,10 @@ import { sendVerificationEmail } from "@/lib/send-email";
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const { email, password } = await request.json();
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
     const supabase = await createServiceClient();
@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     const { data, error } = await supabase.auth.admin.generateLink({
       type: "signup",
       email,
+      password,
       options: {
         redirectTo: `${new URL(request.url).origin}/callback`,
       },
@@ -25,7 +26,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to generate verification link" }, { status: 500 });
     }
 
-    const confirmUrl = data.properties.action_link;
+    // Build our own callback URL with token_hash so we can use verifyOtp
+    // instead of PKCE (which requires a client-side code verifier)
+    const origin = new URL(request.url).origin;
+    const hashedToken = data.properties.hashed_token;
+    const confirmUrl = `${origin}/callback?token_hash=${hashedToken}&type=signup`;
 
     const emailResult = await sendVerificationEmail(email, confirmUrl);
 

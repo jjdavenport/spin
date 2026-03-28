@@ -14,4 +14,4 @@ export type Region = (typeof REGIONS)[number];
 export const SPIN_COST = 1;
 export const FREE_CREDITS = 3;
 
-export const FROM_EMAIL = "Spin <hello@spin.travel>";
+export const FROM_EMAIL = "Spin <onboarding@resend.dev>";

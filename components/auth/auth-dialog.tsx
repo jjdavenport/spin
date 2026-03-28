@@ -120,27 +120,16 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
     const supabase = createClient();
 
     if (mode === "sign-up") {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/callback`,
-        },
+      const res = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
+      const result = await res.json();
 
-      if (signUpError) {
-        setError(signUpError.message);
+      if (!res.ok) {
+        setError(result.error || "Something went wrong. Please try again.");
       } else {
-        // Send branded verification email via Resend
-        try {
-          await fetch("/api/auth/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-          });
-        } catch {
-          // Non-blocking — Supabase may still send its default email as fallback
-        }
         setMessage("Check your email for a confirmation link to complete sign up.");
       }
     } else {
