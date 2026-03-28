@@ -3,6 +3,20 @@ import { FROM_EMAIL } from "./constants";
 import WaitlistWelcome from "@/emails/waitlist-welcome";
 import DestinationSubscription from "@/emails/destination-subscription";
 import SpinResult from "@/emails/spin-result";
+import VerifyEmail from "@/emails/verify-email";
+
+export async function sendVerificationEmail(email: string, confirmUrl: string) {
+  if (!resend) {
+    console.log("[Email] Resend not configured, skipping verification email to", email);
+    return null;
+  }
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: "Confirm your Spin account",
+    react: VerifyEmail({ confirmUrl }),
+  });
+}
 
 export async function sendWaitlistEmail(email: string, position: number) {
   if (!resend) {

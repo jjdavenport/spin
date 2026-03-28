@@ -131,6 +131,16 @@ export function AuthDialog({ open, onOpenChange, defaultMode = "sign-in", onMode
       if (signUpError) {
         setError(signUpError.message);
       } else {
+        // Send branded verification email via Resend
+        try {
+          await fetch("/api/auth/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+        } catch {
+          // Non-blocking — Supabase may still send its default email as fallback
+        }
         setMessage("Check your email for a confirmation link to complete sign up.");
       }
     } else {
