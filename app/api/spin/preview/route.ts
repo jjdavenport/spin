@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRandomDestination } from "@/lib/mock-data";
+import { createServiceClient } from "@/lib/supabase/server";
 
 const MAX_FREE_SPINS = 50;
 
@@ -21,7 +21,24 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const destination = getRandomDestination(region);
+  const supabase = await createServiceClient();
+
+  let query = supabase.from("destinations").select("*");
+  if (region && region !== "All Regions") {
+    query = query.eq("region", region);
+  }
+
+  const { data: destinations, error } = await query;
+
+  if (error || !destinations || destinations.length === 0) {
+    return NextResponse.json(
+      { error: "No destinations available." },
+      { status: 500 }
+    );
+  }
+
+  const destination =
+    destinations[Math.floor(Math.random() * destinations.length)];
 
   const response = NextResponse.json({ destination });
   response.cookies.set("spin-preview-count", String(currentCount + 1), {

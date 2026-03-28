@@ -1,4 +1,6 @@
-import { getAdminStats } from "@/lib/mock-admin-data";
+import { getAdminStats } from "@/lib/admin-data";
+
+export const dynamic = "force-dynamic";
 import { StatCard } from "@/components/admin/stat-card";
 import { MiniBarChart } from "@/components/admin/mini-bar-chart";
 import { RegionBars } from "@/components/admin/region-bars";
@@ -58,8 +60,8 @@ function MailIcon() {
   );
 }
 
-export default function AdminPage() {
-  const stats = getAdminStats();
+export default async function AdminPage() {
+  const stats = await getAdminStats();
 
   return (
     <div className="min-h-screen bg-background">

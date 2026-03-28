@@ -1,4 +1,4 @@
-import { DESTINATIONS } from "./mock-data";
+import { DESTINATIONS } from "./destinations";
 import { DESTINATION_DETAILS } from "./destination-details";
 
 const FIRST_NAMES = [

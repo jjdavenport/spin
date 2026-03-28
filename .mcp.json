@@ -3,6 +3,17 @@
     "shadcn": {
       "command": "npx",
       "args": ["-y", "@anthropic-ai/shadcn-mcp-server@latest"]
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref",
+        "gvoqbsjeboljjhkumooe",
+        "--access-token",
+        "sbp_8056e8e422dd60a3f0fdd46c14a8ed6602b141e9"
+      ]
     }
   }
 }

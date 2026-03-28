@@ -2,7 +2,7 @@
 
 import { use, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DESTINATIONS } from "@/lib/mock-data";
+import { DESTINATIONS } from "@/lib/destinations";
 import { DESTINATION_DETAILS } from "@/lib/destination-details";
 import {
   getSkyscannerLink,

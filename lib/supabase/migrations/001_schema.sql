@@ -44,7 +44,7 @@ create trigger on_auth_user_created
 
 -- Destinations table
 create table public.destinations (
-  id uuid default gen_random_uuid() primary key,
+  id text primary key,
   name text not null,
   country text not null,
   region text not null,
@@ -89,7 +89,7 @@ $$ language sql security definer;
 create table public.spin_history (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references public.profiles on delete cascade not null,
-  destination_id uuid references public.destinations not null,
+  destination_id text references public.destinations not null,
   region_filter text,
   created_at timestamptz default now()
 );

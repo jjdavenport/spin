@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addMockWaitlistEntry, getMockWaitlistCount } from "@/lib/mock-data";
+import { createServiceClient } from "@/lib/supabase/server";
 import { sendWaitlistEmail } from "@/lib/send-email";
 
 export async function POST(request: Request) {
@@ -13,12 +13,31 @@ export async function POST(request: Request) {
       );
     }
 
-    addMockWaitlistEntry(email);
-    const count = getMockWaitlistCount();
+    const supabase = await createServiceClient();
 
-    sendWaitlistEmail(email, count).catch(() => {});
+    // Insert into waitlist (upsert to handle duplicates)
+    const { error: insertError } = await supabase
+      .from("waitlist")
+      .upsert({ email }, { onConflict: "email" });
 
-    return NextResponse.json({ success: true, position: count });
+    if (insertError) {
+      console.error("Waitlist insert error:", insertError);
+      return NextResponse.json(
+        { error: "Something went wrong." },
+        { status: 500 }
+      );
+    }
+
+    // Get total waitlist count
+    const { count } = await supabase
+      .from("waitlist")
+      .select("*", { count: "exact", head: true });
+
+    const position = (count ?? 0) + 2847; // Base count offset
+
+    sendWaitlistEmail(email, position).catch(() => {});
+
+    return NextResponse.json({ success: true, position });
   } catch {
     return NextResponse.json(
       { error: "Something went wrong." },

@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  getRandomDestination,
-  deductMockCredit,
-  getMockBalance,
-  addMockSpinHistory,
-} from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/server";
 import { DESTINATION_DETAILS } from "@/lib/destination-details";
 import { sendSpinResultEmail } from "@/lib/send-email";
 
@@ -12,9 +7,21 @@ export async function POST(request: Request) {
   try {
     const { region, email } = await request.json();
 
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // Check credits
-    const balance = getMockBalance();
-    if (balance <= 0) {
+    const { data: balance } = await supabase.rpc("get_credit_balance", {
+      p_user_id: user.id,
+    });
+
+    if (!balance || balance <= 0) {
       return NextResponse.json(
         { error: "Insufficient credits. Please purchase more." },
         { status: 402 }
@@ -22,8 +29,15 @@ export async function POST(request: Request) {
     }
 
     // Deduct credit
-    const success = deductMockCredit();
-    if (!success) {
+    const { error: deductError } = await supabase
+      .from("credit_ledger")
+      .insert({
+        user_id: user.id,
+        amount: -1,
+        transaction_type: "spin",
+      });
+
+    if (deductError) {
       return NextResponse.json(
         { error: "Failed to deduct credit." },
         { status: 500 }
@@ -31,10 +45,28 @@ export async function POST(request: Request) {
     }
 
     // Pick random destination
-    const destination = getRandomDestination(region);
+    let query = supabase.from("destinations").select("*");
+    if (region && region !== "All Regions") {
+      query = query.eq("region", region);
+    }
+    const { data: destinations } = await query;
+
+    if (!destinations || destinations.length === 0) {
+      return NextResponse.json(
+        { error: "No destinations available." },
+        { status: 500 }
+      );
+    }
+
+    const destination =
+      destinations[Math.floor(Math.random() * destinations.length)];
 
     // Record spin
-    addMockSpinHistory(destination, region || null);
+    await supabase.from("spin_history").insert({
+      user_id: user.id,
+      destination_id: destination.id,
+      region_filter: region || null,
+    });
 
     // Send spin result email if email provided
     if (email) {
@@ -58,9 +90,14 @@ export async function POST(request: Request) {
       }
     }
 
+    // Get updated balance
+    const { data: newBalance } = await supabase.rpc("get_credit_balance", {
+      p_user_id: user.id,
+    });
+
     return NextResponse.json({
       destination,
-      remainingCredits: getMockBalance(),
+      remainingCredits: newBalance ?? 0,
     });
   } catch {
     return NextResponse.json(

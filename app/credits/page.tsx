@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { addMockCredits } from "@/lib/mock-data";
 
 const CREDIT_PACKS = [
   { id: "pack_5", credits: 5, label: "5 Credits" },
@@ -31,18 +30,29 @@ function CreditsContent() {
       .catch(() => {});
   }, []);
 
-  const handleAdd = (packId: string) => {
+  const handleAdd = async (packId: string) => {
     setLoading(packId);
     const pack = CREDIT_PACKS.find((p) => p.id === packId);
     if (pack) {
-      addMockCredits(pack.credits);
-      setCredits((prev) => prev + pack.credits);
-      setSuccessMessage(`${pack.credits} credits added!`);
-      window.dispatchEvent(
-        new CustomEvent("credits-updated", {
-          detail: credits + pack.credits,
-        })
-      );
+      try {
+        const res = await fetch("/api/spin/credits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ credits: pack.credits }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          setCredits(data.balance);
+          setSuccessMessage(`${pack.credits} credits added!`);
+          window.dispatchEvent(
+            new CustomEvent("credits-updated", {
+              detail: data.balance,
+            })
+          );
+        }
+      } catch {
+        // Silently fail
+      }
     }
     setLoading(null);
   };

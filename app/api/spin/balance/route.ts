@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server";
-import { getMockBalance } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
-  return NextResponse.json({ balance: getMockBalance() });
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ balance: 0 });
+  }
+
+  const { data: balance } = await supabase.rpc("get_credit_balance", {
+    p_user_id: user.id,
+  });
+
+  return NextResponse.json({ balance: balance ?? 0 });
 }

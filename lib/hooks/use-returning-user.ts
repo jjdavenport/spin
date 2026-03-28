@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Destination } from "@/lib/types";
-import { DESTINATIONS } from "@/lib/mock-data";
-import { getMockSavedDestinations } from "@/lib/mock-data";
+import { DESTINATIONS } from "@/lib/destinations";
 
 interface ReturningUserState {
   isReturning: boolean;
@@ -38,7 +37,13 @@ export function useReturningUser(): ReturningUserState {
       }
     }
 
-    setSavedCount(getMockSavedDestinations().length);
+    try {
+      const raw = localStorage.getItem("spin-saved-destinations");
+      const saved = raw ? JSON.parse(raw) : [];
+      setSavedCount(Array.isArray(saved) ? saved.length : 0);
+    } catch {
+      setSavedCount(0);
+    }
   }, []);
 
   const dismiss = () => {
