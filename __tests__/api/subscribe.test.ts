@@ -10,7 +10,43 @@ vi.mock("@/lib/destination-details", () => ({
   },
 }));
 
+vi.mock("@/lib/supabase/server", () => ({
+  createServiceClient: vi.fn(),
+}));
+
 import { POST } from "@/app/api/subscribe/route";
+import { createServiceClient } from "@/lib/supabase/server";
+
+function mockSupabase() {
+  (createServiceClient as any).mockResolvedValue({
+    from: vi.fn().mockImplementation((table: string) => {
+      if (table === "email_subscriptions") {
+        return {
+          upsert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: { id: "sub-1", email: "test@example.com", destination_id: "1" },
+                error: null,
+              }),
+            }),
+          }),
+        };
+      }
+      if (table === "destinations") {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: { id: "1", name: "Paris", country: "France", description: "City of Light" },
+              }),
+            }),
+          }),
+        };
+      }
+      return {};
+    }),
+  });
+}
 
 function makeRequest(body: Record<string, unknown>) {
   return new Request("http://localhost/api/subscribe", {
@@ -21,7 +57,10 @@ function makeRequest(body: Record<string, unknown>) {
 }
 
 describe("POST /api/subscribe", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockSupabase();
+  });
 
   it("returns success for valid email and destinationId", async () => {
     const res = await POST(

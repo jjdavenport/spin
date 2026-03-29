@@ -4,8 +4,22 @@ vi.mock("@/lib/send-email", () => ({
   sendWaitlistEmail: vi.fn().mockResolvedValue(null),
 }));
 
+vi.mock("@/lib/supabase/server", () => ({
+  createServiceClient: vi.fn(),
+}));
+
 import { POST } from "@/app/api/waitlist/route";
 import { sendWaitlistEmail } from "@/lib/send-email";
+import { createServiceClient } from "@/lib/supabase/server";
+
+function mockSupabase() {
+  (createServiceClient as any).mockResolvedValue({
+    from: vi.fn().mockReturnValue({
+      upsert: vi.fn().mockResolvedValue({ error: null }),
+      select: vi.fn().mockResolvedValue({ count: 1 }),
+    }),
+  });
+}
 
 function makeRequest(body: Record<string, unknown>) {
   return new Request("http://localhost/api/waitlist", {
@@ -16,7 +30,10 @@ function makeRequest(body: Record<string, unknown>) {
 }
 
 describe("POST /api/waitlist", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockSupabase();
+  });
 
   it("returns success with position for valid email", async () => {
     const res = await POST(makeRequest({ email: "test@example.com" }));
